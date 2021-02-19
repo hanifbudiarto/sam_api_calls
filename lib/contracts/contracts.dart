@@ -3,3 +3,4 @@ export 'auth_service.dart';
 export 'data_service.dart';
 export 'local_service.dart';
 export 'local_storage.dart';
+export 'public_service.dart';

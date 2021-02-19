@@ -7,3 +7,4 @@ export 'data_service_impl.dart';
 export 'local_service_impl.dart';
 export 'secure_storage.dart';
 export 'unsafe_storage.dart';
+export 'public_service_impl.dart';
