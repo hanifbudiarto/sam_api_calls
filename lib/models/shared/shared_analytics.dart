@@ -1,4 +1,4 @@
-import 'shared_analytic.dart';
+import 'package:sam_api_calls/models/shared/shared_analytic.dart';
 
 class SharedAnalytics {
   final List<SharedAnalytic> list;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../contracts/contracts.dart';
-import 'secure_storage.dart';
-import 'unsafe_storage.dart';
+import 'package:sam_api_calls/contracts/contracts.dart';
+import 'package:sam_api_calls/impl/secure_storage.dart';
+import 'package:sam_api_calls/impl/unsafe_storage.dart';
 
 class LocalServiceImpl implements LocalService {
   LocalStorage _storage;

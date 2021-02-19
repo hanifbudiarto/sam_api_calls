@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
-import '../models/models.dart';
+import 'package:sam_api_calls/models/models.dart';
 
 abstract class DataService {
   // dashboard

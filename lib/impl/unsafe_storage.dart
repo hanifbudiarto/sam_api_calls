@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../contracts/contracts.dart';
+import 'package:sam_api_calls/contracts/contracts.dart';
 
 class UnsafeStorage implements LocalStorage {
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../sam_iot_widgets.dart';
-import 'dashboard_item.dart';
-import 'iot_widget.dart';
+import 'package:sam_api_calls/models/dashboard/dashboard_item.dart';
+import 'package:sam_api_calls/models/dashboard/iot_widget.dart';
+import 'package:sam_api_calls/models/sam_iot_widgets.dart';
 
 class DashboardProfileData {
   List<DashboardItem> items;
@@ -17,7 +16,7 @@ class DashboardProfileData {
     var data = json["items"] as List;
     data.forEach((element) {
       IotWidget iotWidget = SamIotWidgets().collection.singleWhere(
-              (wgt) => wgt.id == element["widget_id"],
+          (wgt) => wgt.id == element["widget_id"],
           orElse: () => null);
       if (iotWidget != null) {
         list.add(DashboardItem.fromJson(element));

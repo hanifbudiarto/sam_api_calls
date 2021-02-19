@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import '../models/models.dart';
-import '../contracts/contracts.dart';
+import 'package:sam_api_calls/contracts/contracts.dart';
+import 'package:sam_api_calls/models/models.dart';
 
 class AppInterceptor extends Interceptor {
   final Dio _dio;

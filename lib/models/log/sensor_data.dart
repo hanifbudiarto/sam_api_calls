@@ -1,5 +1,7 @@
-import '../device/device.dart';
-import '../../util/util.dart';
+
+
+import 'package:sam_api_calls/models/device/device.dart';
+import 'package:sam_api_calls/util/util.dart';
 
 class SensorData {
   DateTime datein;

@@ -1,4 +1,4 @@
-import 'shared_user.dart';
+import 'package:sam_api_calls/models/shared/shared_user.dart';
 
 class SharedUsers {
   List<SharedUser> list;

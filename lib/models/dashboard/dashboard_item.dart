@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../analytic/analytic.dart';
-import '../sam_iot_widgets.dart';
-import 'iot_widget.dart';
+import 'package:sam_api_calls/models/analytic/analytic.dart';
+import 'package:sam_api_calls/models/dashboard/iot_widget.dart';
+import 'package:sam_api_calls/models/sam_iot_widgets.dart';
 
 class DashboardItem {
   int position;

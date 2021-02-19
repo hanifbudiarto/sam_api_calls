@@ -1,6 +1,6 @@
-import 'device_option.dart';
-import 'node.dart';
-import 'wgt.dart';
+import 'package:sam_api_calls/models/device/device_option.dart';
+import 'package:sam_api_calls/models/device/node.dart';
+import 'package:sam_api_calls/models/device/wgt.dart';
 
 class DeviceIot {
   String id;

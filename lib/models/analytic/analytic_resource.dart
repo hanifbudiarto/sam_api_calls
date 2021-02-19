@@ -1,4 +1,4 @@
-import 'resource.dart';
+import 'package:sam_api_calls/models/analytic/resource.dart';
 
 class AnalyticResource {
   String analyticId;

@@ -1,4 +1,4 @@
-import '../user/user.dart';
+import 'package:sam_api_calls/models/user/user.dart';
 
 class SharedUser {
   final String sharedItemId;

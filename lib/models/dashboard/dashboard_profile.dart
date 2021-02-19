@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'dashboard_profile_data.dart';
+import 'package:sam_api_calls/models/dashboard/dashboard_profile_data.dart';
 
 class DashboardProfile {
   String id;

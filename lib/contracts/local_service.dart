@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'local_storage.dart';
+import 'package:sam_api_calls/contracts/local_storage.dart';
 
 abstract class LocalService {
   Future<LocalStorage> getStorage();

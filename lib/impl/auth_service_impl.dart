@@ -4,10 +4,10 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import '../contracts/contracts.dart';
-import '../models/models.dart';
-import '../util/util.dart';
-import 'api_endpoints.dart';
+import 'package:sam_api_calls/contracts/contracts.dart';
+import 'package:sam_api_calls/impl/api_endpoints.dart';
+import 'package:sam_api_calls/models/models.dart';
+import 'package:sam_api_calls/util/util.dart';
 
 class AuthServiceImpl extends AuthService {
   Dio _dio;

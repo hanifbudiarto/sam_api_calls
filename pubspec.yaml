@@ -1,6 +1,6 @@
 name: sam_api_calls
 description: A new Flutter package.
-version: 0.0.1
+version: 0.0.2
 homepage: http://www.samelement.com
 
 environment:
@@ -14,9 +14,7 @@ dependencies:
   intl: ^0.16.1
   shared_preferences: ^0.5.12+4
   path: ^1.7.0
-  flutter_secure_storage:
-    git:
-      url: https://github.com/hanifbudiarto/flutter_secure_storage.git
+  flutter_secure_storage_with_init: ^3.3.5
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,4 @@
-import 'device_iot.dart';
+import 'package:sam_api_calls/models/device/device_iot.dart';
 
 class Devices {
   List<DeviceIot> list;

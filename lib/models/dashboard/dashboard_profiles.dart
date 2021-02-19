@@ -1,4 +1,4 @@
-import 'dashboard_profile.dart';
+import 'package:sam_api_calls/models/dashboard/dashboard_profile.dart';
 
 class DashboardProfiles {
   final List<DashboardProfile> list;

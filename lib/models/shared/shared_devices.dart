@@ -1,5 +1,6 @@
 // from endpoint /share not /devicesshared
-import 'shared_device.dart';
+
+import 'package:sam_api_calls/models/shared/shared_device.dart';
 
 class SharedDevices {
   /*

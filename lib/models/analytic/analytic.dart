@@ -9,3 +9,6 @@ export 'map_settings.dart';
 export 'option_resource.dart';
 export 'resource.dart';
 export 'analytics_resources.dart';
+export 'chart_action.dart';
+export 'chart_event.dart';
+export 'option.dart';

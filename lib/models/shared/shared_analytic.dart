@@ -1,5 +1,5 @@
-import '../user/user.dart';
-import '../analytic/analytic.dart';
+import 'package:sam_api_calls/models/analytic/analytic.dart';
+import 'package:sam_api_calls/models/user/user.dart';
 
 class SharedAnalytic {
   final String id;

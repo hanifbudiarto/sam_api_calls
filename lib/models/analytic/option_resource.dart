@@ -1,4 +1,4 @@
-import 'map_settings.dart';
+import 'package:sam_api_calls/models/analytic/map_settings.dart';
 
 class OptionResource {
   int elementIndex;

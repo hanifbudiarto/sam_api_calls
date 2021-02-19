@@ -1,4 +1,4 @@
-import 'analytic_widget.dart';
+import 'package:sam_api_calls/models/analytic/analytic_widget.dart';
 
 class Analytics {
   final List<AnalyticWidget> list;

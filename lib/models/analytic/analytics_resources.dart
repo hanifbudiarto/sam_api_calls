@@ -1,4 +1,4 @@
-import 'analytic_resource.dart';
+import 'package:sam_api_calls/models/analytic/analytic_resource.dart';
 
 class AnalyticsResources {
   final List<AnalyticResource> list;

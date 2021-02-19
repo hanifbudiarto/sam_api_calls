@@ -1,4 +1,4 @@
-import 'ohlc.dart';
+import 'package:sam_api_calls/models/log/ohlc.dart';
 
 class StyledDevicesLogs {
   final int totalrecords;

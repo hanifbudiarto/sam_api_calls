@@ -1,5 +1,5 @@
-import '../device/device.dart';
-import '../user/user.dart';
+import 'package:sam_api_calls/models/device/device.dart';
+import 'package:sam_api_calls/models/user/user.dart';
 
 class SharedDevice {
   /*

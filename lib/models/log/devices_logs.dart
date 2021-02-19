@@ -1,7 +1,6 @@
-import '../../util/util.dart';
-
-import '../device/device.dart';
-import 'sensor_data.dart';
+import 'package:sam_api_calls/models/device/device.dart';
+import 'package:sam_api_calls/models/log/sensor_data.dart';
+import 'package:sam_api_calls/util/util.dart';
 
 class DevicesLogs {
   final int totalrecords;

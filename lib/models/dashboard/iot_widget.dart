@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'iot_widget_element.dart';
+import 'package:sam_api_calls/models/dashboard/iot_widget_element.dart';
 
 class IotWidget {
   String id;

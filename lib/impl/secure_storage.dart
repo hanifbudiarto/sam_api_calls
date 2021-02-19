@@ -1,15 +1,14 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../contracts/contracts.dart';
+import 'package:flutter_secure_storage_with_init/flutter_secure_storage_with_init.dart';
+import 'package:sam_api_calls/contracts/contracts.dart';
 
 class SecureStorage implements LocalStorage {
-  FlutterSecureStorage storage;
+  FlutterSecureStorageWithInit storage;
 
   @override
   Future<bool> init() async {
     if (storage == null) {
-      storage = FlutterSecureStorage();
+      storage = FlutterSecureStorageWithInit();
     }
 
     return await storage.init();

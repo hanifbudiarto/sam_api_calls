@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import '../contracts/contracts.dart';
+import 'package:sam_api_calls/contracts/contracts.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio _dio;

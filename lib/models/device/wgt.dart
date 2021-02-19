@@ -1,6 +1,6 @@
-import '../dashboard/dashboard.dart';
-import '../sam_iot_widgets.dart';
-import 'wgt_elements.dart';
+import 'package:sam_api_calls/models/dashboard/dashboard.dart';
+import 'package:sam_api_calls/models/device/wgt_elements.dart';
+import 'package:sam_api_calls/models/sam_iot_widgets.dart';
 
 class Wgt {
   IotWidget model;

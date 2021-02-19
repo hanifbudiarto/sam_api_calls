@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'city.dart';
+import 'package:sam_api_calls/models/user/city.dart';
 
 class Cities {
   List<City> list;

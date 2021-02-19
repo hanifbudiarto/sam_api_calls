@@ -1,6 +1,5 @@
-import '../device/device.dart';
-
-import 'option_resource.dart';
+import 'package:sam_api_calls/models/analytic/option_resource.dart';
+import 'package:sam_api_calls/models/device/device.dart';
 
 class Resource {
   String resourceId;

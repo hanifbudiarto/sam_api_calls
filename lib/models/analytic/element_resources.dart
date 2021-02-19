@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'resource.dart';
+import 'package:sam_api_calls/models/analytic/resource.dart';
 
 class ElementResources {
   String elementId;

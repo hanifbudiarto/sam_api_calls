@@ -1,4 +1,5 @@
-import 'country.dart';
+
+import 'package:sam_api_calls/models/user/country.dart';
 
 class Countries {
   List<Country> list;

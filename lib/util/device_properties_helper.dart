@@ -1,4 +1,5 @@
-import '../models/models.dart';
+import 'package:sam_api_calls/models/dashboard/dashboard.dart';
+import 'package:sam_api_calls/models/device/device.dart';
 
 class DevicePropertiesHelper {
   static bool isVendorDeviceValid(

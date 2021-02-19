@@ -76,14 +76,12 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_secure_storage:
+  flutter_secure_storage_with_init:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: da90349b2fb5d4426a2036690645cdbc8e990751
-      url: "https://github.com/hanifbudiarto/flutter_secure_storage.git"
-    source: git
+      name: flutter_secure_storage_with_init
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "3.3.5"
   flutter_test:
     dependency: "direct dev"

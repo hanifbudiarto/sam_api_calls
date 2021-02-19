@@ -1,8 +1,5 @@
-
-
 import 'package:flutter/material.dart';
-
-import 'device_option_message.dart';
+import 'package:sam_api_calls/models/device/device_option_message.dart';
 
 class DeviceOption {
   bool notify;

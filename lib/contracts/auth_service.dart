@@ -1,4 +1,4 @@
-import '../models/models.dart';
+import 'package:sam_api_calls/models/models.dart';
 
 abstract class AuthService {
   // Authenticate

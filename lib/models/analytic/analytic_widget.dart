@@ -1,4 +1,4 @@
-import 'chart_option.dart';
+import 'package:sam_api_calls/models/analytic/chart_option.dart';
 
 class AnalyticWidget {
   String id;

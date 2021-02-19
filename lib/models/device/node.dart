@@ -1,5 +1,6 @@
 
-import 'property.dart';
+
+import 'package:sam_api_calls/models/device/property.dart';
 
 class Node {
   String id;
