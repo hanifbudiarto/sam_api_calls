@@ -6,7 +6,9 @@ class SamIotWidgets {
   static final SamIotWidgets _instance = SamIotWidgets._internal();
 
   factory SamIotWidgets({List<IotWidget> collection}) {
-    _instance.collection = collection;
+    if (collection != null) {
+      _instance.collection = collection;
+    }
     return _instance;
   }
 
