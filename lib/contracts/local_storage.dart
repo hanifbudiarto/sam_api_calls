@@ -10,4 +10,6 @@ abstract class LocalStorage {
   Future<bool> clearAll();
 
   Future<bool> clear({@required String key});
+
+  Future<bool> isContainsKey({@required String key});
 }

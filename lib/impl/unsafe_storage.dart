@@ -31,7 +31,12 @@ class UnsafeStorage implements LocalStorage {
   }
 
   @override
-  Future<bool> clear({String key}) async {
+  Future<bool> clear({@required String key}) async {
     return await prefs.remove(key);
+  }
+
+  @override
+  Future<bool> isContainsKey({@required String key}) async {
+    return prefs.containsKey(key);
   }
 }

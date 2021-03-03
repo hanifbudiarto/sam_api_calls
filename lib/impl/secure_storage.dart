@@ -44,12 +44,17 @@ class SecureStorage implements LocalStorage {
   }
 
   @override
-  Future<bool> clear({String key}) async {
+  Future<bool> clear({@required String key}) async {
     try {
       await storage.delete(key: key);
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  @override
+  Future<bool> isContainsKey({@required String key}) async {
+    return await storage.containsKey(key: key);
   }
 }

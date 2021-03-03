@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:sam_api_calls/contracts/contracts.dart';
 import 'package:sam_api_calls/impl/secure_storage.dart';
 import 'package:sam_api_calls/impl/unsafe_storage.dart';
@@ -41,8 +40,14 @@ class LocalServiceImpl implements LocalService {
   }
 
   @override
-  Future<bool> clear({String key}) async {
+  Future<bool> clear({@required String key}) async {
     return await getStorage()
         .then((storage) async => await storage.clear(key: key));
+  }
+
+  @override
+  Future<bool> isContainsKey({@required String key}) async {
+    return await getStorage()
+        .then((storage) async => await storage.isContainsKey(key: key));
   }
 }
