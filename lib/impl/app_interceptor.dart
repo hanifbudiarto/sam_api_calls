@@ -32,49 +32,34 @@ class AppInterceptor extends Interceptor {
   }
 
   @override
-  Future onResponse(Response response) async {
-    await _localService.clear(
-        key: LocalServiceKeys.APP_INTERCEPTOR_ERROR_COUNTER);
-    return response;
-  }
-
-  @override
   Future onError(DioError error) async {
-    bool counterErrorExists = await _localService.isContainsKey(
-        key: LocalServiceKeys.APP_INTERCEPTOR_ERROR_COUNTER);
-    int counter = 0;
-    if (counterErrorExists) {
-      String counterStr = await _localService.read(
-          key: LocalServiceKeys.APP_INTERCEPTOR_ERROR_COUNTER);
-      counter = int.parse(counterStr);
-    }
 
-    if (error.response.statusCode == 401 && counter <= 2) {
+    if (error.response.statusCode == 401) {
       _dio.interceptors.requestLock.lock();
       _dio.interceptors.responseLock.lock();
 
       // Refresh app token
-      String savedAppRefreshToken =
-          await _authService.getSavedAppRefreshToken();
-      AuthToken newAppToken =
-          await _authService.refreshAppToken(savedAppRefreshToken);
-      await _authService.saveTokens(appToken: newAppToken);
+      await _authService
+          .getSavedAppRefreshToken()
+          .then((savedAppRefreshToken) async {
+        await _authService
+            .refreshAppToken(savedAppRefreshToken)
+            .then((newAppToken) async {
+          await _authService.saveTokens(appToken: newAppToken);
 
-      await _localService.write(
-          key: LocalServiceKeys.APP_INTERCEPTOR_ERROR_COUNTER,
-          value: (counter + 1).toString());
+          RequestOptions options = error.response.request;
 
-      RequestOptions options = error.response.request;
+          _dio.interceptors.requestLock.unlock();
+          _dio.interceptors.responseLock.unlock();
 
-      _dio.interceptors.requestLock.unlock();
-      _dio.interceptors.responseLock.unlock();
-
-      return await _dio.request(
-        options.path,
-        queryParameters: error.request.queryParameters,
-        data: error.request.data,
-        options: options,
-      );
+          return await _dio.request(
+            options.path,
+            queryParameters: error.request.queryParameters,
+            data: error.request.data,
+            options: options,
+          );
+        });
+      });
     }
 
     return error;

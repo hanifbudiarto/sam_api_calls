@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sam_api_calls/contracts/contracts.dart';
-import 'package:sam_api_calls/models/local_service_keys.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio _dio;
@@ -35,63 +34,51 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  Future onResponse(Response response) async {
-    await _localService.clear(
-        key: LocalServiceKeys.AUTH_INTERCEPTOR_ERROR_COUNTER);
-    return response;
-  }
-
-  @override
   Future onError(DioError error) async {
-    bool counterErrorExists = await _localService.isContainsKey(
-        key: LocalServiceKeys.AUTH_INTERCEPTOR_ERROR_COUNTER);
-    int counter = 0;
-    if (counterErrorExists) {
-      String counterStr = await _localService.read(
-          key: LocalServiceKeys.AUTH_INTERCEPTOR_ERROR_COUNTER);
-      counter = int.parse(counterStr);
-    }
-
-    if (error.response.statusCode == 401 && counter <= 2) {
+    if (error.response.statusCode == 401) {
+      print("masuk refresh auth");
       _dio.interceptors.requestLock.lock();
       _dio.interceptors.responseLock.lock();
 
       await _authService
           .refreshAppToken(await _authService.getSavedAppRefreshToken())
           .then((appToken) async {
+        print("apptoken");
         await _authService
             .refreshDeviceToken(await _authService.getSavedDeviceRefreshToken())
             .then((deviceToken) async {
+          print("devicetoken");
           await _authService
               .refreshUserToken(await _authService.getSavedUserRefreshToken(),
                   appToken.accessToken)
               .then((userToken) async {
+            print("usertoken");
             await _authService.saveTokens(
                 appToken: appToken,
                 userToken: userToken,
                 deviceToken: deviceToken);
-            await _localService.write(
-                key: LocalServiceKeys.AUTH_INTERCEPTOR_ERROR_COUNTER,
-                value: (counter + 1).toString());
 
             _onRefreshedToken();
+
+            RequestOptions options = error.response.request;
+
+            _dio.interceptors.requestLock.unlock();
+            _dio.interceptors.responseLock.unlock();
+
+            return await _dio.request(
+              options.path,
+              queryParameters: error.request.queryParameters,
+              data: error.request.data,
+              options: options,
+            );
+          }).catchError((e) {
+            print("refresh user token ${e.toString()}");
           });
         });
       });
-
-      RequestOptions options = error.response.request;
-
-      _dio.interceptors.requestLock.unlock();
-      _dio.interceptors.responseLock.unlock();
-
-      return await _dio.request(
-        options.path,
-        queryParameters: error.request.queryParameters,
-        data: error.request.data,
-        options: options,
-      );
     }
 
+    print("return langsung ke error");
     return error;
   }
 }

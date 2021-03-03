@@ -44,7 +44,4 @@ class LocalServiceKeys {
 
   static const String RATE_DEVICES_ADDED = "rate_devices_added";
   static const String RATE_WIDGETS_CREATED = "rate_widgets_created";
-
-  static const String APP_INTERCEPTOR_ERROR_COUNTER = "app_interceptor_error_counter";
-  static const String AUTH_INTERCEPTOR_ERROR_COUNTER = "auth_interceptor_error_counter";
 }

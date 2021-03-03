@@ -1,3 +1,7 @@
+## [0.0.7] - Fix issues
+
+## [0.0.6] - Catch 405 refresh User Token on Auth interceptor
+
 ## [0.0.5] - Fix loop authentication request
 
 ## [0.0.4] - Fix widget collection null

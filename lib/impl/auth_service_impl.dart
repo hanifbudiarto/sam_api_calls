@@ -145,7 +145,8 @@ class AuthServiceImpl extends AuthService {
         await saveDeviceRefreshToken(deviceToken.refreshToken);
       }
       return await Future.value(true);
-    } catch (e) {}
+    } catch (e) {
+    }
 
     return await Future.value(false);
   }
