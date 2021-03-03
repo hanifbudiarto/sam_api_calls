@@ -1,3 +1,5 @@
+## [0.0.8] - Unlock dio response and request lock
+
 ## [0.0.7] - Fix issues
 
 ## [0.0.6] - Catch 405 refresh User Token on Auth interceptor

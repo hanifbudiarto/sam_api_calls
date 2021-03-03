@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sam_api_calls/contracts/contracts.dart';
-import 'package:sam_api_calls/models/models.dart';
 
 class AppInterceptor extends Interceptor {
   final Dio _dio;
@@ -33,11 +32,10 @@ class AppInterceptor extends Interceptor {
 
   @override
   Future onError(DioError error) async {
+    _dio.interceptors.requestLock.lock();
+    _dio.interceptors.responseLock.lock();
 
     if (error.response.statusCode == 401) {
-      _dio.interceptors.requestLock.lock();
-      _dio.interceptors.responseLock.lock();
-
       // Refresh app token
       await _authService
           .getSavedAppRefreshToken()
@@ -59,8 +57,13 @@ class AppInterceptor extends Interceptor {
             options: options,
           );
         });
+      }).catchError((e) {
+        print(e.toString());
       });
     }
+
+    _dio.interceptors.requestLock.unlock();
+    _dio.interceptors.responseLock.unlock();
 
     return error;
   }

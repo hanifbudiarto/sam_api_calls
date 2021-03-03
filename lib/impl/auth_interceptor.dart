@@ -35,10 +35,12 @@ class AuthInterceptor extends Interceptor {
 
   @override
   Future onError(DioError error) async {
+
+    _dio.interceptors.requestLock.lock();
+    _dio.interceptors.responseLock.lock();
+
     if (error.response.statusCode == 401) {
       print("masuk refresh auth");
-      _dio.interceptors.requestLock.lock();
-      _dio.interceptors.responseLock.lock();
 
       await _authService
           .refreshAppToken(await _authService.getSavedAppRefreshToken())
@@ -71,14 +73,19 @@ class AuthInterceptor extends Interceptor {
               data: error.request.data,
               options: options,
             );
-          }).catchError((e) {
-            print("refresh user token ${e.toString()}");
           });
         });
+      }).catchError((e) {
+        print(e.toString());
       });
+
     }
 
     print("return langsung ke error");
+
+    _dio.interceptors.requestLock.unlock();
+    _dio.interceptors.responseLock.unlock();
+
     return error;
   }
 }
