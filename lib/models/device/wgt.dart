@@ -24,7 +24,7 @@ class Wgt {
     bool widgetExists =
         SamIotWidgets().collection.any((w) => w.id == json['model'].toString());
 
-    List<WgtElements> el = new List<WgtElements>();
+    List<WgtElements> el = <WgtElements>[];
     if (json['elements'] != null) {
       json['elements'].forEach((v) {
         el.add(new WgtElements.fromJson(v));

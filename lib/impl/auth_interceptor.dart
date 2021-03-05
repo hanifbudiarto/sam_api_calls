@@ -7,18 +7,15 @@ import 'package:sam_api_calls/contracts/contracts.dart';
 class AuthInterceptor extends Interceptor {
   final Dio _dio;
   final AuthService _authService;
-  final LocalService _localService;
   final VoidCallback _onRefreshedToken;
 
   AuthInterceptor(
       {@required Dio dio,
       @required AuthService authService,
-      @required VoidCallback onRefreshedToken,
-      @required LocalService localService})
+      @required VoidCallback onRefreshedToken})
       : this._dio = dio,
         this._authService = authService,
-        this._onRefreshedToken = onRefreshedToken,
-        this._localService = localService;
+        this._onRefreshedToken = onRefreshedToken;
 
   @override
   Future onRequest(RequestOptions options) async {

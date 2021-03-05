@@ -23,7 +23,7 @@ class Node {
     name = json['name'];
     type = json['type'];
     if (json['properties'].toString() != "null") {
-      properties = new List<Property>();
+      properties = <Property>[];
       json['properties'].forEach((v) {
         properties.add(new Property.fromJson(id, v));
       });

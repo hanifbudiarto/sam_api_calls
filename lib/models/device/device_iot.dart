@@ -74,7 +74,7 @@ class DeviceIot {
     mapLat = json['map_lat'];
     logo = json['logo'];
     if (json['nodes'].toString() != "null") {
-      nodes = new List<Node>();
+      nodes = <Node>[];
       json['nodes'].forEach((v) {
         nodes.add(new Node.fromJson(v));
       });

@@ -7,15 +7,12 @@ import 'package:sam_api_calls/contracts/contracts.dart';
 class AppInterceptor extends Interceptor {
   final Dio _dio;
   final AuthService _authService;
-  final LocalService _localService;
 
   AppInterceptor(
       {@required Dio dio,
-      @required AuthService authService,
-      @required LocalService localService})
+      @required AuthService authService})
       : this._dio = dio,
-        this._authService = authService,
-        this._localService = localService;
+        this._authService = authService;
 
   @override
   Future onRequest(RequestOptions options) async {

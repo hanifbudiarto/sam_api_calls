@@ -25,7 +25,6 @@ void main() {
     final authService =
         AuthServiceImpl(storage: localService, interceptors: []);
     final authInterceptor = AuthInterceptor(
-        localService: localService,
         dio: userDio,
         authService: authService,
         onRefreshedToken: () async {});
@@ -42,11 +41,11 @@ void main() {
       return client;
     };
     final appInterceptor = AppInterceptor(
-        dio: appDio, authService: authService, localService: localService);
+        dio: appDio, authService: authService);
     appDio.interceptors.addAll([appInterceptor]);
 
-    final appService = AppServiceImpl(dio: appDio);
-    final publicService = PublicServiceImpl();
+    // final appService = AppServiceImpl(dio: appDio);
+    // final publicService = PublicServiceImpl();
 
     final BasicAuth appAuth = BasicAuth(
         username: "",

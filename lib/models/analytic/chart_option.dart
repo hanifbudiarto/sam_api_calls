@@ -7,7 +7,7 @@ class ChartOptions {
 
   factory ChartOptions.fromJson(Map<String, dynamic> json) {
     if (json['options'] != null || json['options'].toString() != "null") {
-      List opts = new List<Option>();
+      List opts = <Option>[];
       json['options'].forEach((v) {
         opts.add(new Option.fromJson(v, json["model"]));
       });
