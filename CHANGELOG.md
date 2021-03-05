@@ -1,3 +1,5 @@
+## [0.0.9] - Flutter localization to any
+
 ## [0.0.8] - Unlock dio response and request lock
 
 ## [0.0.7] - Fix issues

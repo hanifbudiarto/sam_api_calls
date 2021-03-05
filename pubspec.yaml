@@ -1,6 +1,6 @@
 name: sam_api_calls
 description: A new Flutter package.
-version: 0.0.8
+version: 0.0.9
 homepage: http://www.samelement.com
 
 environment:
@@ -10,8 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   dio: ^3.0.10
-  intl: ^0.16.1
   shared_preferences: ^0.5.12+4
   path: ^1.7.0
   flutter_secure_storage_with_init: ^3.3.7
