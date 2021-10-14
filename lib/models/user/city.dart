@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of sam_models_users;
 
 class City {
   /*
@@ -8,20 +8,19 @@ class City {
   "district": "Mpumalanga"
    */
 
-  String id;
-  String name, countryCode, district;
+  late final String id;
+  late final String name, countryCode, district;
 
   City(
-      {@required this.id,
-        @required this.name,
-        @required this.countryCode,
-        @required this.district});
+      {required this.id,
+      required this.name,
+      required this.countryCode,
+      required this.district});
 
-  factory City.fromJson(Map<String, dynamic> json) {
-    return City(
-        id: json["id"].toString(),
-        name: json["name"],
-        countryCode: json["country_code"],
-        district: json["district"]);
+  City.fromJson(Map<String, dynamic> json) {
+    this.id = json['id'].toString();
+    this.name = json['name'].toString();
+    this.countryCode = json['country_code'];
+    this.district = json['district'];
   }
 }

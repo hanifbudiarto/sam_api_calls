@@ -1,28 +1,26 @@
-import 'package:sam_api_calls/models/dashboard/dashboard.dart';
-import 'package:sam_api_calls/models/device/wgt_elements.dart';
-import 'package:sam_api_calls/models/sam_iot_widgets.dart';
+part of sam_models_devices;
 
 class Wgt {
-  IotWidget model;
-  String name;
-  String defaultTitle;
-  String defaultLogo;
-  int defaultWidth;
-  int defaultHeight;
-  List<WgtElements> elements;
+  late final IotWidget model;
+  late final String name;
+  late final String defaultTitle;
+  late final String defaultLogo;
+  late final int defaultWidth;
+  late final int defaultHeight;
+  late final List<WgtElements> elements;
 
   Wgt(
-      {this.model,
-      this.name,
-      this.defaultTitle,
-      this.defaultLogo,
-      this.defaultWidth,
-      this.defaultHeight,
-      this.elements});
+      {required this.model,
+      required this.name,
+      required this.defaultTitle,
+      required this.defaultLogo,
+      required this.defaultWidth,
+      required this.defaultHeight,
+      required this.elements});
 
-  factory Wgt.fromJson(Map<String, dynamic> json) {
+  Wgt.fromJson(Map<String, dynamic> json) {
     bool widgetExists =
-        SamIotWidgets().collection.any((w) => w.id == json['model'].toString());
+        SamIotWidgets.instance.collection.any((w) => w.id == json['model'].toString());
 
     List<WgtElements> el = <WgtElements>[];
     if (json['elements'] != null) {
@@ -32,19 +30,16 @@ class Wgt {
     }
 
     if (widgetExists) {
-      return Wgt(
-          model: SamIotWidgets()
-              .collection
-              .singleWhere((w) => w.id == json['model'].toString()),
-          name: json['name'],
-          defaultTitle: json['default_title'],
-          defaultLogo: json['default_logo'],
-          defaultWidth: json['default_width'],
-          defaultHeight: json['default_height'],
-          elements: el);
+      this.model = SamIotWidgets.instance
+          .collection
+          .singleWhere((w) => w.id == json['model'].toString());
+      this.name = json['name'];
+      this.defaultTitle = json['default_title'];
+      this.defaultLogo = json['default_logo'];
+      this.defaultWidth = json['default_width'];
+      this.defaultHeight = json['default_height'];
+      this.elements = el;
     }
-
-    return null;
   }
 
   Map<String, dynamic> toJson() {
@@ -55,11 +50,7 @@ class Wgt {
     data['default_logo'] = this.defaultLogo;
     data['default_width'] = this.defaultWidth;
     data['default_height'] = this.defaultHeight;
-    if (this.elements != null) {
-      data['elements'] = this.elements.map((v) => v.toJson()).toList();
-    } else {
-      data['elements'] = [];
-    }
+    data['elements'] = this.elements.map((v) => v.toJson()).toList();
     return data;
   }
 }

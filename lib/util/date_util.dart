@@ -1,4 +1,4 @@
-import 'package:intl/intl.dart';
+part of sam_utils;
 
 class DateUtil {
   static DateTime convertToLocalDate(String dateTime) {

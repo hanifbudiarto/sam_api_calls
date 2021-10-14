@@ -1,30 +1,13 @@
-import 'dart:io';
-
-import 'package:dio/adapter.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-
-import 'package:sam_api_calls/contracts/contracts.dart';
-import 'package:sam_api_calls/impl/api_endpoints.dart';
-import 'package:sam_api_calls/models/models.dart';
-import 'package:sam_api_calls/util/util.dart';
+part of sam_impl;
 
 class AuthServiceImpl extends AuthService {
-  Dio _dio;
-  LocalService _storage;
-  AuthToken _userToken, _appToken, _deviceToken;
+  late Dio _dio;
+  late LocalService _storage;
+  AuthToken? _userToken, _appToken, _deviceToken;
 
-  AuthServiceImpl({@required LocalService storage, List<Interceptor> interceptors}) {
-    _dio = Dio(BaseOptions(baseUrl: ApiEndpoints.HOST));
-    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
-      };
-
-      return client;
-    };
+  AuthServiceImpl(
+      {required Dio dio, required LocalService storage, List<Interceptor>? interceptors}) {
+    this._dio = dio;
 
     if (interceptors != null && interceptors.length > 0) {
       _dio.interceptors.addAll(interceptors);
@@ -93,7 +76,7 @@ class AuthServiceImpl extends AuthService {
 
   @override
   Future<AuthToken> refreshUserToken(
-      String userRefreshToken, String appAccessToken) async {
+      String userRefreshToken, String? appAccessToken) async {
     try {
       return await _dio
           .get(ApiEndpoints.AUTH,
@@ -128,7 +111,9 @@ class AuthServiceImpl extends AuthService {
 
   @override
   Future<bool> saveTokens(
-      {AuthToken appToken, AuthToken userToken, AuthToken deviceToken}) async {
+      {AuthToken? appToken,
+      AuthToken? userToken,
+      AuthToken? deviceToken}) async {
     try {
       if (userToken != null) {
         this._userToken = userToken;
@@ -145,49 +130,54 @@ class AuthServiceImpl extends AuthService {
         await saveDeviceRefreshToken(deviceToken.refreshToken);
       }
       return await Future.value(true);
-    } catch (e) {
-    }
+    } catch (e) {}
 
     return await Future.value(false);
   }
 
   @override
-  Future<String> getCurrentAppAccessToken() async {
+  Future<String?> getCurrentAppAccessToken() async {
     if (_appToken == null) return null;
 
-    return await Future.value(_appToken.accessToken);
+    return await Future.value(_appToken!.accessToken);
   }
 
   @override
   Future<String> getSavedAppRefreshToken() async {
-    return await _storage.read(
-        key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_APP);
+    String? token =
+        await _storage.read(key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_APP);
+    if (token == null) return "";
+    return token;
   }
 
   @override
-  Future<String> getCurrentUserAccessToken() async {
+  Future<String?> getCurrentUserAccessToken() async {
     if (_userToken == null) return null;
 
-    return await Future.value(_userToken.accessToken);
+    return await Future.value(_userToken!.accessToken);
   }
 
   @override
   Future<String> getSavedUserRefreshToken() async {
-    return await _storage.read(
-        key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_USER);
+    String? token =
+        await _storage.read(key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_USER);
+    if (token == null) return "";
+    return token;
   }
 
   @override
-  Future<String> getCurrentDeviceAccessToken() async {
+  Future<String?> getCurrentDeviceAccessToken() async {
     if (_deviceToken == null) return null;
 
-    return await Future.value(_deviceToken.accessToken);
+    return await Future.value(_deviceToken!.accessToken);
   }
 
   @override
   Future<String> getSavedDeviceRefreshToken() async {
-    return await _storage.read(
+    String? token = await _storage.read(
         key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_DEVICE);
+    if (token == null) return "";
+    return token;
   }
 
   @override

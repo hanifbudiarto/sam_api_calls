@@ -1,31 +1,21 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:sam_api_calls/contracts/contracts.dart';
-import 'package:sam_api_calls/impl/api_endpoints.dart';
-import 'package:sam_api_calls/models/models.dart';
-import 'package:sam_api_calls/util/util.dart';
+part of sam_impl;
 
 class DataServiceImpl extends DataService {
-  static const String BROKER = "iot.samelement.com";
-  static const String BROKER_SSL = "ssl";
+  static const String BROKER = 'iot.samelement.com';
+  static const String BROKER_SSL = 'ssl';
   static const int BROKER_PORT = 8883;
   final Dio _dio;
 
-  DataServiceImpl({@required Dio dio}) : this._dio = dio;
+  DataServiceImpl({required Dio dio}) : this._dio = dio;
 
   @override
-  Future<bool> deleteDashboard(DashboardProfile profile) async {
+  Future<bool> deleteDashboard(String profileId) async {
     try {
       return await _dio
-          .delete("${ApiEndpoints.DASHBOARDS}/${profile.id}")
+          .delete('${ApiEndpoints.DASHBOARDS}/$profileId')
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to delete dashboard profile";
+      throw 'Failed to delete dashboard profile';
     }
   }
 
@@ -34,7 +24,7 @@ class DataServiceImpl extends DataService {
     try {
       return await _dio
           .get(ApiEndpoints.DASHBOARDS,
-              queryParameters: {"limit": 1000},
+              queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) {
@@ -45,7 +35,7 @@ class DataServiceImpl extends DataService {
         return DashboardProfiles(list: []);
       });
     } on DioError catch (_) {
-      throw "Failed to get all dashboards";
+      throw 'Failed to get all dashboards';
     }
   }
 
@@ -53,12 +43,12 @@ class DataServiceImpl extends DataService {
   Future<DashboardProfiles> getDashboardsById(String id) async {
     try {
       return await _dio
-          .get("${ApiEndpoints.DASHBOARDS}/$id",
+          .get('${ApiEndpoints.DASHBOARDS}/$id',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => DashboardProfiles.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get dashboard by id $id";
+      throw 'Failed to get dashboard by id $id';
     }
   }
 
@@ -66,14 +56,14 @@ class DataServiceImpl extends DataService {
   Future<DashboardProfile> postEmptyDashboardProfile(String name) async {
     try {
       final String body = json.encode({
-        "name": name,
-        "data": {"items": []}
+        'name': name,
+        'data': {'items': []}
       });
       return await _dio
           .post(ApiEndpoints.DASHBOARDS, data: body)
-          .then((value) => DashboardProfile.fromJson(value.data["body"]));
+          .then((value) => DashboardProfile.fromJson(value.data['body']));
     } on DioError catch (_) {
-      throw "Failed to create dashboard profile";
+      throw 'Failed to create dashboard profile';
     }
   }
 
@@ -81,11 +71,11 @@ class DataServiceImpl extends DataService {
   Future<bool> putDashboard(DashboardProfile newProfile) async {
     try {
       return await _dio
-          .put("${ApiEndpoints.DASHBOARDS}/${newProfile.id}",
+          .put('${ApiEndpoints.DASHBOARDS}/${newProfile.id}',
               data: json.encode(newProfile))
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to update dashboard profile";
+      throw 'Failed to update dashboard profile';
     }
   }
 
@@ -94,12 +84,12 @@ class DataServiceImpl extends DataService {
     try {
       return await _dio
           .get(ApiEndpoints.CITIES,
-              queryParameters: {"search": keyword},
+              queryParameters: {'search': keyword},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Cities.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get cities";
+      throw 'Failed to get cities';
     }
   }
 
@@ -107,12 +97,12 @@ class DataServiceImpl extends DataService {
   Future<Countries> getCountriesByCode(String code) async {
     try {
       return await _dio
-          .get("${ApiEndpoints.COUNTRIES}/$code",
+          .get('${ApiEndpoints.COUNTRIES}/$code',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Countries.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get countries";
+      throw 'Failed to get countries';
     }
   }
 
@@ -123,7 +113,7 @@ class DataServiceImpl extends DataService {
           .get(ApiEndpoints.USER_AVATAR)
           .then((value) => UserAvatar.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get user avatar";
+      throw 'Failed to get user avatar';
     }
   }
 
@@ -137,10 +127,10 @@ class DataServiceImpl extends DataService {
   Future<UserAccount> getUserAccount() async {
     try {
       return await _dio.get(ApiEndpoints.USER, queryParameters: {
-        "profile": 2
-      }).then((value) => UserAccount.fromJson(value.data["body"]));
+        'profile': 2
+      }).then((value) => UserAccount.fromJson(value.data['body']));
     } on DioError catch (_) {
-      throw "Failed to get user account";
+      throw 'Failed to get user account';
     }
   }
 
@@ -148,7 +138,7 @@ class DataServiceImpl extends DataService {
   Future<bool> postUploadAvatar(File image) async {
     try {
       FormData formData = FormData.fromMap({
-        "user_avatar": await MultipartFile.fromFile(
+        'user_avatar': await MultipartFile.fromFile(
           image.path,
           filename: basename(image.path),
         ),
@@ -158,7 +148,7 @@ class DataServiceImpl extends DataService {
           .post(ApiEndpoints.USER_AVATAR, data: formData)
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to upload user avatar";
+      throw 'Failed to upload user avatar';
     }
   }
 
@@ -166,24 +156,24 @@ class DataServiceImpl extends DataService {
   Future<bool> putUserOrganization(UserOrganization organization) async {
     try {
       final String body = json.encode({
-        "org_name": "${organization.orgName}",
-        "org_addr1": "${organization.orgAddr1}",
-        "org_addr2": "${organization.orgAddr2}",
-        "org_city": "${organization.orgCity}",
-        "org_province": "${organization.orgProvince}",
-        "org_country": "${organization.orgCountry}",
-        "org_zip": "${organization.orgZip}",
-        "org_web": "${organization.orgWeb}",
-        "org_email": "${organization.orgEmail}",
-        "org_phone": "${organization.orgPhone}"
+        'org_name': '${organization.orgName}',
+        'org_addr1': '${organization.orgAddr1}',
+        'org_addr2': '${organization.orgAddr2}',
+        'org_city': '${organization.orgCity}',
+        'org_province': '${organization.orgProvince}',
+        'org_country': '${organization.orgCountry}',
+        'org_zip': '${organization.orgZip}',
+        'org_web': '${organization.orgWeb}',
+        'org_email': '${organization.orgEmail}',
+        'org_phone': '${organization.orgPhone}'
       });
 
       return await _dio
-          .put("${ApiEndpoints.USER}/${organization.userId}",
-              queryParameters: {"profile": 1}, data: body)
+          .put('${ApiEndpoints.USER}/${organization.userId}',
+              queryParameters: {'profile': 1}, data: body)
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to update user organization";
+      throw 'Failed to update user organization';
     }
   }
 
@@ -191,42 +181,42 @@ class DataServiceImpl extends DataService {
   Future<bool> putUserProfile(UserProfile profile) async {
     try {
       final String body = json.encode({
-        "user_fname": "${profile.userFname}",
-        "user_lname": "${profile.userLname}",
-        "user_phone": "${profile.userPhone}",
-        "user_email": "${profile.userEmail}"
+        'user_fname': '${profile.userFname}',
+        'user_lname': '${profile.userLname}',
+        'user_phone': '${profile.userPhone}',
+        'user_email': '${profile.userEmail}'
       });
 
       return await _dio
-          .put("${ApiEndpoints.USER}/${profile.userId}",
-              queryParameters: {"profile": 0}, data: body)
+          .put('${ApiEndpoints.USER}/${profile.userId}',
+              queryParameters: {'profile': 0}, data: body)
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to update user profile";
+      throw 'Failed to update user profile';
     }
   }
 
   @override
-  Future<bool> deleteDevice(DeviceIot device) async {
+  Future<bool> deleteDevice(String deviceId) async {
     try {
       return await _dio
-          .delete("${ApiEndpoints.DEVICES}/${device.id}")
+          .delete('${ApiEndpoints.DEVICES}/$deviceId')
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to delete device";
+      throw 'Failed to delete device';
     }
   }
 
   @override
   Future<bool> deleteUnlinkDeviceFromUser(
-      DeviceIot device, UserAccount user) async {
+      String deviceId, String userId) async {
     try {
       return await _dio.delete(
-        "${ApiEndpoints.DEVICES_SHARED}/${device.id}",
-        queryParameters: {"user_id": user.userId},
+        '${ApiEndpoints.DEVICES_SHARED}/$deviceId',
+        queryParameters: {'user_id': userId},
       ).then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to delete unlinked device from user";
+      throw 'Failed to delete unlinked device from user';
     }
   }
 
@@ -235,12 +225,12 @@ class DataServiceImpl extends DataService {
     try {
       return await _dio
           .get(ApiEndpoints.DEVICES,
-              queryParameters: {"limit": 1000},
+              queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Devices.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get all devices";
+      throw 'Failed to get all devices';
     }
   }
 
@@ -248,12 +238,12 @@ class DataServiceImpl extends DataService {
   Future<Devices> getDeviceById(String id) async {
     try {
       return await _dio
-          .get("${ApiEndpoints.DEVICES}/$id",
+          .get('${ApiEndpoints.DEVICES}/$id',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Devices.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get a device by id";
+      throw 'Failed to get a device by id';
     }
   }
 
@@ -262,12 +252,12 @@ class DataServiceImpl extends DataService {
     try {
       return await _dio
           .get(ApiEndpoints.DEVICES,
-              queryParameters: {"sn": sn, "unclaim": 1},
+              queryParameters: {'sn': sn, 'unclaim': 1},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Devices.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get a device by serial number";
+      throw 'Failed to get a device by serial number';
     }
   }
 
@@ -276,31 +266,31 @@ class DataServiceImpl extends DataService {
     try {
       return await _dio
           .get(ApiEndpoints.DEVICES,
-              queryParameters: {"vcode": vcode, "device_id": id},
+              queryParameters: {'vcode': vcode, 'device_id': id},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Devices.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get a device by verification code id";
+      throw 'Failed to get a device by verification code id';
     }
   }
 
   @override
   Future<Devices> getDevices(
-      {int limit = 0, int offset = 0, String keyword = ""}) async {
+      {int limit = 0, int offset = 0, String keyword = ''}) async {
     try {
       return await _dio
           .get(ApiEndpoints.DEVICES,
               queryParameters: {
-                "limit": limit,
-                "offset": offset,
-                "search": keyword
+                'limit': limit,
+                'offset': offset,
+                'search': keyword
               },
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Devices.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get devices";
+      throw 'Failed to get devices';
     }
   }
 
@@ -308,158 +298,150 @@ class DataServiceImpl extends DataService {
   Future<SharedDevices> getSharedDevices() async {
     try {
       return await _dio
-          .get("${ApiEndpoints.SHARE}/0",
-              queryParameters: {"limit": 1000},
+          .get('${ApiEndpoints.SHARE}/0',
+              queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => SharedDevices.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to all shared devices";
+      throw 'Failed to all shared devices';
     }
   }
 
   @override
-  Future<SharedUsers> getSharedUserByDeviceId(DeviceIot device) async {
+  Future<SharedUsers> getSharedUserByDeviceId(String deviceId) async {
     try {
       return await _dio
-          .get("${ApiEndpoints.DEVICES_SHARED}/${device.id}",
-              queryParameters: {"limit": 1000},
+          .get('${ApiEndpoints.DEVICES_SHARED}/$deviceId',
+              queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => SharedUsers.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to all shared users";
+      throw 'Failed to all shared users';
     }
   }
 
   @override
-  Future<bool> postAcceptSharedDevice(
-      DeviceIot device, String verificationCode) async {
+  Future<bool> postAcceptSharedDevice(String deviceId, String vcode) async {
     try {
-      final String body = json
-          .encode({"device_id": "${device.id}", "vcode": "$verificationCode"});
+      final String body = json.encode({'device_id': deviceId, 'vcode': vcode});
       return await _dio
-          .post("${ApiEndpoints.SHARE}/2", data: body)
+          .post('${ApiEndpoints.SHARE}/2', data: body)
           .then((value) => true);
     } on DioError catch (_) {
       throw getThrowsMessage(
-          "Failed to accept this shared device", _.response.data);
+          'Failed to accept this shared device', _.response!.data);
     }
   }
 
   @override
-  Future<bool> postIgnoreSharedDevice(SharedDevice sharedDevice) async {
+  Future<bool> postIgnoreSharedDevice(String deviceId, String vcode) async {
     try {
-      final String body = json.encode({
-        "device_id": "${sharedDevice.sharedItem.id}",
-        "vcode": "${sharedDevice.vcode}"
-      });
+      final String body = json.encode({'device_id': deviceId, 'vcode': vcode});
       return await _dio
-          .post("${ApiEndpoints.SHARE}/3", data: body)
+          .post('${ApiEndpoints.SHARE}/3', data: body)
           .then((value) => true);
     } on DioError catch (_) {
       throw getThrowsMessage(
-          "Failed to discard this shared device", _.response.data);
+          'Failed to discard this shared device', _.response!.data);
     }
   }
 
   @override
   Future<String> postShareDeviceViaEmail(
-      DeviceIot device, UserAccount destinationAccount) async {
+      String deviceId, String? destinationEmail) async {
     try {
       final String body = json.encode({
-        "device_id": "${device.id}",
-        "email": (destinationAccount != null)
-            ? "${destinationAccount.userEmail}"
-            : ""
+        'device_id': deviceId,
+        'email': (destinationEmail != null) ? destinationEmail : ''
       });
       return await _dio
-          .post("${ApiEndpoints.SHARE}/0", data: body)
-          .then((value) => value.data["vcode"]);
+          .post('${ApiEndpoints.SHARE}/0', data: body)
+          .then((value) => value.data['vcode']);
     } on DioError catch (_) {
-      throw "Failed to share this device via email";
+      throw 'Failed to share this device via email';
     }
   }
 
   @override
-  Future<bool> putClaimDevice(DeviceIot device, UserAccount account) async {
+  Future<bool> putClaimDevice(DeviceClaimParam param) async {
     try {
       final String body = json.encode({
-        "sn": "${device.sn}",
-        "model": "${device.model}",
-        "name": "${device.name}",
-        "desc": "${device.desc}",
-        "map_lat": "${device.mapLat}",
-        "map_lng": "${device.mapLng}",
-        "logo": "${device.logo}",
-        "admin_id": "${account.userId}",
-        "status": "${device.status}",
-        "unclaim": "0"
+        'sn': '${param.sn}',
+        'model': '${param.model}',
+        'name': '${param.name}',
+        'desc': '${param.desc}',
+        'map_lat': '${param.mapLat}',
+        'map_lng': '${param.mapLng}',
+        'logo': '${param.logo}',
+        'admin_id': '${param.userId}',
+        'status': '${param.status}',
+        'unclaim': '0'
       });
       return await _dio
-          .put("${ApiEndpoints.DEVICES}/${device.id}", data: body)
+          .put('${ApiEndpoints.DEVICES}/${param.id}', data: body)
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to claim this device";
+      throw 'Failed to claim this device';
     }
   }
 
   @override
-  Future<bool> putDevice(DeviceIot device) async {
+  Future<bool> putDevice(DeviceClaimParam param, DeviceOption options) async {
     try {
       final String body = json.encode({
-        "sn": "${device.sn}",
-        "model": "${device.model}",
-        "name": "${device.name}",
-        "desc": "${device.desc}",
-        "map_lat": "${device.mapLat}",
-        "map_lng": "${device.mapLng}",
-        "logo": "${device.logo}",
-        "admin_id": "${device.adminId}",
-        "status": "${device.status}",
-        "options": device.options
+        'sn': '${param.sn}',
+        'model': '${param.model}',
+        'name': '${param.name}',
+        'desc': '${param.desc}',
+        'map_lat': '${param.mapLat}',
+        'map_lng': '${param.mapLng}',
+        'logo': '${param.logo}',
+        'admin_id': '${param.userId}',
+        'status': '${param.status}',
+        'options': options
       });
       return await _dio
-          .put("${ApiEndpoints.DEVICES}/${device.id}", data: body)
+          .put('${ApiEndpoints.DEVICES}/${param.id}', data: body)
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to update this device properties";
+      throw 'Failed to update this device properties';
     }
   }
 
   @override
-  Future<bool> deleteAnalytic(AnalyticWidget analytic) async {
+  Future<bool> deleteAnalytic(String analyticId) async {
     try {
       return await _dio
-          .delete("${ApiEndpoints.ANALYTICS}/${analytic.id}")
+          .delete('${ApiEndpoints.ANALYTICS}/$analyticId')
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to delete this widget resources";
+      throw 'Failed to delete this widget resources';
     }
   }
 
   @override
-  Future<bool> deleteAnalyticsResourcesByAnalytic(
-      AnalyticWidget analytic) async {
+  Future<bool> deleteAnalyticsResourcesByAnalytic(String analyticId) async {
     try {
       return await _dio
-          .delete("${ApiEndpoints.ANALYTICS_RESOURCES}/${analytic.id}")
+          .delete('${ApiEndpoints.ANALYTICS_RESOURCES}/$analyticId')
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to delete this widget resources";
+      throw 'Failed to delete this widget resources';
     }
   }
 
   @override
   Future<bool> deleteUnlinkAnalyticFromUser(
-      AnalyticWidget analytic, UserAccount user) async {
+      String analyticId, String userId) async {
     try {
       return await _dio.delete(
-        "${ApiEndpoints.ANALYTICS_SHARED}/${analytic.id}",
-        queryParameters: {"user_id": user.userId},
+        '${ApiEndpoints.ANALYTICS_SHARED}/$analyticId',
+        queryParameters: {'user_id': userId},
       ).then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to unlink this user from the widget";
+      throw 'Failed to unlink this user from the widget';
     }
   }
 
@@ -467,12 +449,12 @@ class DataServiceImpl extends DataService {
   Future<Analytics> getAnalyticById(String id) async {
     try {
       return await _dio
-          .get("${ApiEndpoints.ANALYTICS}/$id",
+          .get('${ApiEndpoints.ANALYTICS}/$id',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Analytics.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get widget by id";
+      throw 'Failed to get widget by id';
     }
   }
 
@@ -481,40 +463,39 @@ class DataServiceImpl extends DataService {
     try {
       return await _dio
           .get(ApiEndpoints.ANALYTICS,
-              queryParameters: {"vcode": vcode, "analytic_id": id},
+              queryParameters: {'vcode': vcode, 'analytic_id': id},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Analytics.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get widget by vcode id";
+      throw 'Failed to get widget by vcode id';
     }
   }
 
   @override
   Future<Analytics> getAnalytics(
-      {int limit = 0, int offset = 0, String keyword = ""}) async {
+      {int limit = 0, int offset = 0, String keyword = ''}) async {
     try {
       return await _dio
           .get(ApiEndpoints.ANALYTICS,
               queryParameters: {
-                "limit": limit,
-                "offset": offset,
-                "search": keyword
+                'limit': limit,
+                'offset': offset,
+                'search': keyword
               },
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Analytics.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get widgets with that keyword";
+      throw 'Failed to get widgets with that keyword';
     }
   }
 
   @override
-  Future<AnalyticsResources> getAnalyticsResources(
-      AnalyticWidget analytic) async {
+  Future<AnalyticsResources> getAnalyticsResources(String analyticId) async {
     try {
       return await _dio
-          .get("${ApiEndpoints.ANALYTICS_RESOURCES}/${analytic.id}",
+          .get('${ApiEndpoints.ANALYTICS_RESOURCES}/$analyticId',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => AnalyticsResources.fromJson(value.data));
@@ -524,31 +505,39 @@ class DataServiceImpl extends DataService {
   }
 
   @override
-  Future<DevicesLogs> getDevicesLogs(Resource resource,
-      {int limit, DateTime timeStart}) async {
+  Future<DevicesLogs> getDevicesLogs(DevicesLogsParam param,
+      {DateTime? timeStart}) async {
     try {
-      DateFormat formatter = DateFormat("yyyy-MM-dd HH:mm:ss");
+      DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
       if (timeStart == null) {
         timeStart = DateTime.now().subtract(Duration(days: 30)).toUtc();
       }
 
-      Property prop = DevicePropertiesHelper.getPropertyByDeviceParameter(
-          resource.deviceParameter, resource.device);
-
       return await _dio
-          .get("${ApiEndpoints.DEVICES_LOGS}/${resource.deviceId}",
+          .get('${ApiEndpoints.DEVICES_LOGS}/${param.deviceId}',
               queryParameters: {
-                "parameter": resource.deviceParameter,
-                "communication": "mqtt",
-                "limit": limit,
-                "ts": formatter.format(timeStart),
-                "sortorder": "desc"
+                'parameter': param.deviceParameter,
+                'communication': 'mqtt',
+                // 'limit': limit,
+                'ts': formatter.format(timeStart),
+                'sortorder': 'desc'
               },
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => DevicesLogs.fromJson(value.data, prop));
+          .then((value) {
+        Property? prop = DevicePropertiesHelper.getPropertyByDeviceParameter(
+            param.deviceParameter, param.device);
+        if (prop != null) {
+          var devicesLogs = DevicesLogs.fromJson(value.data, prop);
+          int maxLimit = param.limit > devicesLogs.list.length ? devicesLogs.list.length : param.limit;
+
+          return DevicesLogs(
+              list: devicesLogs.list.getRange(0, maxLimit).toList());
+        }
+        return DevicesLogs(list: <SensorData>[]);
+      });
     } on DioError catch (_) {
-      throw "Failed to get this device logs";
+      throw 'Failed to get this device logs';
     }
   }
 
@@ -557,12 +546,12 @@ class DataServiceImpl extends DataService {
     try {
       return await _dio
           .get(ApiEndpoints.ANALYTICS,
-              queryParameters: {"limit": 1000},
+              queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => Analytics.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get all widgets";
+      throw 'Failed to get all widgets';
     }
   }
 
@@ -570,64 +559,64 @@ class DataServiceImpl extends DataService {
   Future<SharedAnalytics> getSharedAnalytics() async {
     try {
       return await _dio
-          .get("${ApiEndpoints.SHARE}/1",
-              queryParameters: {"limit": 1000},
+          .get('${ApiEndpoints.SHARE}/1',
+              queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => SharedAnalytics.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get all shared widgets";
+      throw 'Failed to get all shared widgets';
     }
   }
 
   @override
-  Future<SharedUsers> getSharedUserByAnalyticId(AnalyticWidget analytic) async {
+  Future<SharedUsers> getSharedUserByAnalyticId(String analyticId) async {
     try {
       return await _dio
-          .get("${ApiEndpoints.ANALYTICS_SHARED}/${analytic.id}",
-              queryParameters: {"limit": 1000},
+          .get('${ApiEndpoints.ANALYTICS_SHARED}/$analyticId',
+              queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => SharedUsers.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get shared users";
+      throw 'Failed to get shared users';
     }
   }
 
   @override
-  Future<StyledDevicesLogs> getStyledDevicesLogs(Resource resource,
-      {int limit, String style, int timeframe}) async {
+  Future<StyledDevicesLogs> getStyledDevicesLogs(
+      DevicesLogsParam param, LogsStyle style, int timeframeMinutes,
+      {int? limit}) async {
     try {
       return await _dio
-          .get("${ApiEndpoints.DEVICES_LOGS}/${resource.deviceId}",
+          .get('${ApiEndpoints.DEVICES_LOGS}/${param.deviceId}',
               queryParameters: {
-                "parameter": resource.deviceParameter,
-                "communication": "mqtt",
-                "limit": limit,
-                "sortorder": "desc",
-                "style": style,
-                "tf": timeframe
+                'parameter': param.deviceParameter,
+                'communication': 'mqtt',
+                'limit': limit,
+                'sortorder': 'desc',
+                'style': style.name,
+                'tf': timeframeMinutes
               },
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) => StyledDevicesLogs.fromJson(value.data));
     } on DioError catch (_) {
-      throw "Failed to get devices logs";
+      throw 'Failed to get devices logs';
     }
   }
 
   @override
-  Future<bool> postAcceptSharedAnalytic(
-      AnalyticWidget analytic, String verificationCode) async {
+  Future<bool> postAcceptSharedAnalytic(String analyticId, String vcode) async {
     try {
-      final String body = json.encode(
-          {"analytic_id": "${analytic.id}", "vcode": "$verificationCode"});
+      final String body =
+          json.encode({'analytic_id': analyticId, 'vcode': vcode});
 
       return await _dio
-          .post("${ApiEndpoints.SHARE}/2", data: body)
+          .post('${ApiEndpoints.SHARE}/2', data: body)
           .then((value) => true);
     } on DioError catch (_) {
-      throw getThrowsMessage("Failed to accept this widget", _.response.data);
+      throw getThrowsMessage('Failed to accept this widget', _.response!.data);
     }
   }
 
@@ -635,87 +624,83 @@ class DataServiceImpl extends DataService {
   Future<bool> postAnalyticsResources(AnalyticResource analyticResource) async {
     try {
       final String body = json.encode({
-        "analytic_id": analyticResource.analyticId,
-        "resources": analyticResource.resources
+        'analytic_id': analyticResource.analyticId,
+        'resources': analyticResource.resources
       });
       return await _dio
-          .post("${ApiEndpoints.ANALYTICS_RESOURCES}", data: body)
+          .post('${ApiEndpoints.ANALYTICS_RESOURCES}', data: body)
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to update this widget resources";
+      throw 'Failed to update this widget resources';
     }
   }
 
   @override
-  Future<bool> postIgnoreSharedAnalytic(SharedAnalytic sharedAnalytic) async {
+  Future<bool> postIgnoreSharedAnalytic(String analyticId, String vcode) async {
     try {
-      final String body = json.encode({
-        "analytic_id": "${sharedAnalytic.sharedItem.id}",
-        "vcode": "${sharedAnalytic.vcode}"
-      });
+      final String body =
+          json.encode({'analytic_id': analyticId, 'vcode': vcode});
       return await _dio
-          .post("${ApiEndpoints.SHARE}/3", data: body)
+          .post('${ApiEndpoints.SHARE}/3', data: body)
           .then((value) => true);
     } on DioError catch (_) {
       throw getThrowsMessage(
-          "Failed to discard this shared widget", _.response.data);
+          'Failed to discard this shared widget', _.response!.data);
     }
   }
 
   @override
-  Future<AnalyticWidget> postNewAnalytic(AnalyticWidget analytic) async {
+  Future<AnalyticWidget> postNewAnalytic(AnalyticWidgetParam param) async {
     try {
-      final String body = json.encode(analytic.toJson());
+      final String body = json.encode(param.toJson());
 
       return await _dio
           .post(ApiEndpoints.ANALYTICS, data: body)
-          .then((value) => AnalyticWidget.fromJson(value.data["body"]));
+          .then((value) => AnalyticWidget.fromJson(value.data['body']));
     } on DioError catch (_) {
-      throw "Failed to create a new widget";
+      throw 'Failed to create a new widget';
     }
   }
 
   @override
   Future<String> postShareAnalytic(
-      AnalyticWidget analytic, UserAccount destinationAccount) async {
+      String analyticId, String? destinationEmail) async {
     try {
       final String body = json.encode({
-        "analytic_id": "${analytic.id}",
-        "email": (destinationAccount != null)
-            ? "${destinationAccount.userEmail}"
-            : ""
+        'analytic_id': analyticId,
+        'email': (destinationEmail != null) ? destinationEmail : ''
       });
       return await _dio
-          .post("${ApiEndpoints.SHARE}/1", data: body)
-          .then((value) => value.data["vcode"]);
+          .post('${ApiEndpoints.SHARE}/1', data: body)
+          .then((value) => value.data['vcode']);
     } on DioError catch (_) {
-      throw "Failed to share this widget";
+      throw 'Failed to share this widget';
     }
   }
 
   @override
-  Future<bool> putAnalytic(AnalyticWidget analytic) async {
+  Future<bool> putAnalytic(String analyticId, AnalyticWidgetParam param,
+      ChartOptions options) async {
     try {
-      final String body = json.encode({
-        "title": analytic.title,
-        "model": analytic.model,
-        "options": analytic.options
-      });
+      final String body = json.encode(
+          {'title': param.title, 'model': param.model, 'options': options});
       return await _dio
-          .put("${ApiEndpoints.ANALYTICS}/${analytic.id}", data: body)
+          .put('${ApiEndpoints.ANALYTICS}/$analyticId', data: body)
           .then((value) => true);
     } on DioError catch (_) {
-      throw "Failed to update this widget";
+      throw 'Failed to update this widget';
     }
   }
 
   @override
   String getThrowsMessage(
-      String defaultError, Map<String, dynamic> responseData) {
-    try {
-      ApiError apiError = ApiError.fromJson(responseData);
-      defaultError = apiError.desc;
-    } catch (e) {}
+      String defaultError, Map<String, dynamic>? responseData) {
+    if (responseData != null) {
+      try {
+        ApiError apiError = ApiError.fromJson(responseData);
+        return apiError.desc;
+      } catch (e) {}
+    }
 
     return defaultError;
   }

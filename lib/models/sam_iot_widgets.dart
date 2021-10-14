@@ -1,15 +1,13 @@
-import 'dashboard/dashboard.dart';
+part of sam_models;
 
 class SamIotWidgets {
-  List<IotWidget> collection;
+  late final List<IotWidget> collection;
 
-  static final SamIotWidgets _instance = SamIotWidgets._internal();
+  static late final SamIotWidgets instance = SamIotWidgets._internal();
 
-  factory SamIotWidgets({List<IotWidget> collection}) {
-    if (collection != null) {
-      _instance.collection = collection;
-    }
-    return _instance;
+  factory SamIotWidgets({List<IotWidget> collection = const <IotWidget>[]}) {
+    instance.collection = collection;
+    return instance;
   }
 
   SamIotWidgets._internal();

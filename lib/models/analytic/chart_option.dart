@@ -1,30 +1,25 @@
-import 'package:sam_api_calls/models/analytic/option.dart';
+part of sam_models_analytics;
 
 class ChartOptions {
-  List<Option> list;
+  late final List<Option> list;
 
-  ChartOptions({this.list});
+  ChartOptions({this.list = const <Option>[]});
 
-  factory ChartOptions.fromJson(Map<String, dynamic> json) {
-    if (json['options'] != null || json['options'].toString() != "null") {
+  ChartOptions.fromJson(Map<String, dynamic> json) {
+    List<Option> options = <Option>[];
+    if (json['options'] != null || json['options'].toString() != 'null') {
       List opts = <Option>[];
       json['options'].forEach((v) {
-        opts.add(new Option.fromJson(v, json["model"]));
+        opts.add(new Option.fromJson(v, json['model']));
       });
 
-      return ChartOptions(list: opts);
+      this.list = opts as List<Option>;
+    } else {
+      this.list = options;
     }
-
-    return null;
   }
 
   List<Map<String, dynamic>> toJson() {
-    if (this.list != null) {
-      return this.list.map((v) => v.toJson()).toList();
-    }
-    return [];
+    return this.list.map((v) => v.toJson()).toList();
   }
 }
-
-
-

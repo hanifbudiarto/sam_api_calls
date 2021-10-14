@@ -6,7 +6,7 @@ class SecureStorage implements LocalStorage {
   FlutterSecureStorageWithInit storage;
 
   @override
-  Future<bool> init() async {
+  Future<bool> init({String path}) async {
     if (storage == null) {
       storage = FlutterSecureStorageWithInit();
     }

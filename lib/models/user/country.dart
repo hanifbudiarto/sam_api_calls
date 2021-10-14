@@ -1,3 +1,4 @@
+part of sam_models_users;
 
 class Country {
   /*
@@ -8,18 +9,22 @@ class Country {
   "region": "Southeast Asia"
    */
 
-  String code;
-  String code2;
-  String name, continent, region;
+  late final String code;
+  late final String code2;
+  late final String name, continent, region;
 
-  Country({this.code, this.code2, this.name, this.continent, this.region});
+  Country(
+      {required this.code,
+      required this.code2,
+      required this.name,
+      required this.continent,
+      required this.region});
 
-  factory Country.fromJson(Map<String, dynamic> json) {
-    return Country(
-        code: json["code"],
-        code2: json["code2"],
-        name: json["name"],
-        continent: json["continent"],
-        region: json["region"]);
+  Country.fromJson(Map<String, dynamic> json) {
+    this.code = json['code'];
+    this.code2 = json['code2'];
+    this.name = json['name'];
+    this.continent = json['continent'];
+    this.region = json['region'];
   }
 }

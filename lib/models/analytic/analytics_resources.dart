@@ -1,19 +1,19 @@
-import 'package:sam_api_calls/models/analytic/analytic_resource.dart';
+part of sam_models_analytics;
 
 class AnalyticsResources {
-  final List<AnalyticResource> list;
+  late final List<AnalyticResource> list;
 
-  AnalyticsResources({this.list});
+  AnalyticsResources({required this.list});
 
-  factory AnalyticsResources.fromJson(Map<String, dynamic> json) {
+  AnalyticsResources.fromJson(Map<String, dynamic> json) {
     List<AnalyticResource> analyticResourceList = [];
 
-    if (json.containsKey("body")) {
-      var bodies = json["body"] as List;
+    if (json.containsKey('body')) {
+      var bodies = json['body'] as List;
       analyticResourceList =
           bodies.map((c) => AnalyticResource.fromJson(c)).toList();
     }
 
-    return AnalyticsResources(list: analyticResourceList);
+    this.list = analyticResourceList;
   }
 }

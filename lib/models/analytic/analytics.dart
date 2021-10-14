@@ -1,19 +1,19 @@
-import 'package:sam_api_calls/models/analytic/analytic_widget.dart';
+part of sam_models_analytics;
 
 class Analytics {
-  final List<AnalyticWidget> list;
+  late final List<AnalyticWidget> list;
 
-  Analytics({this.list});
+  Analytics({required this.list});
 
-  factory Analytics.fromJson(Map<String, dynamic> json) {
+  Analytics.fromJson(Map<String, dynamic> json) {
     List<AnalyticWidget> analytics = [];
 
-    var results = json["body"] as List;
+    List? results = json['body'] as List?;
 
     if (results != null) {
       analytics = results.map((a) => AnalyticWidget.fromJson(a)).toList();
     }
 
-    return Analytics(list: analytics);
+    this.list = analytics;
   }
 }

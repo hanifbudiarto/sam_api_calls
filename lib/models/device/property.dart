@@ -1,35 +1,34 @@
-import 'package:flutter/material.dart';
+part of sam_models_devices;
 
 class Property {
-  String parentId;
-  String id;
-  String name;
-  bool settable;
-  bool retained;
-  String unit;
-  String datatype;
-  String format;
+  String? parentId;
+  late final String id;
+  String? name;
+  bool? settable;
+  bool? retained;
+  String? unit;
+  String? datatype;
+  String? format;
 
   Property(
-      {@required this.parentId,
-        this.id,
-        this.name,
-        this.settable,
-        this.retained,
-        this.unit,
-        this.datatype,
-        this.format});
+      {this.parentId,
+      required this.id,
+      this.name,
+      this.settable,
+      this.retained,
+      this.unit,
+      this.datatype,
+      this.format});
 
-  factory Property.copyFrom(Property prop) {
-    return Property(
-        parentId: prop.parentId,
-        id: prop.id,
-        name: prop.name,
-        settable: prop.settable,
-        retained: prop.retained,
-        unit: prop.unit,
-        datatype: prop.datatype,
-        format: prop.format);
+  Property.copyFrom(Property prop) {
+    this.parentId = prop.parentId;
+    this.id = prop.id;
+    this.name = prop.name;
+    this.settable = prop.settable;
+    this.retained = prop.retained;
+    this.unit = prop.unit;
+    this.datatype = prop.datatype;
+    this.format = prop.format;
   }
 
   Property.fromJson(String parentId, Map<String, dynamic> json) {
@@ -56,7 +55,11 @@ class Property {
     return data;
   }
 
-  operator ==(prop) => "${prop.parentId}/${prop.id}" == "$parentId/$id";
+  @override
+  bool operator ==(other) {
+    return (other is Property) &&
+        "${other.parentId}/${other.id}" == "$parentId/$id";
+  }
 
   int get hashCode => parentId.hashCode ^ id.hashCode;
 }

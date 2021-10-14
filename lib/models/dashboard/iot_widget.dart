@@ -1,46 +1,44 @@
-import 'package:flutter/material.dart';
-import 'package:sam_api_calls/models/dashboard/iot_widget_element.dart';
+part of sam_models_dashboards;
 
 class IotWidget {
-  String id;
-  String title;
-  String icon;
-  int minWidth;
-  int minHeight;
-  String tags;
-  List<String> compatibleModels;
-  String vendor;
-  List<IotWidgetElement> elements;
+  late final String id;
+  late final String title;
+  late final String icon;
+  late final int minWidth;
+  late final int minHeight;
+  late final String tags;
+  late final List<String> compatibleModels;
+  late final String vendor;
+  late final List<IotWidgetElement> elements;
 
   IotWidget(
-      {@required this.id,
-        @required this.title,
-        @required this.icon,
-        @required this.minWidth,
-        @required this.minHeight,
-        @required this.elements,
-        @required this.tags,
-        @required this.compatibleModels,
-        @required this.vendor});
+      {required this.id,
+      required this.title,
+      required this.icon,
+      required this.minWidth,
+      required this.minHeight,
+      required this.elements,
+      required this.tags,
+      required this.compatibleModels,
+      required this.vendor});
 
-  factory IotWidget.fromJson(Map<String, dynamic> json) {
-    var elements = json["elements"] as List;
-    var compatible = json["compatible_models"] as List;
+  IotWidget.fromJson(Map<String, dynamic> json) {
+    var elements = json['elements'] as List;
+    var compatible = json['compatible_models'] as List;
 
     // convert to regex style
     compatible.forEach((compat) {
-      compat.replaceAll("*", "\w+");
+      compat.replaceAll('*', '\w+');
     });
 
-    return IotWidget(
-        id: json["id"],
-        title: json["title"],
-        icon: json["icon"],
-        minWidth: json["min_width"],
-        minHeight: json["min_height"],
-        tags: json["tags"],
-        compatibleModels: compatible.map((e) => e.toString()).toList(),
-        vendor: json["vendor"],
-        elements: elements.map((e) => IotWidgetElement.fromJson(e)).toList());
+    this.id = json['id'];
+    this.title = json['title'];
+    this.icon = json['icon'];
+    this.minWidth = json['min_width'];
+    this.minHeight = json['min_height'];
+    this.tags = json['tags'];
+    this.compatibleModels = compatible.map((e) => e.toString()).toList();
+    this.vendor = json['vendor'];
+    this.elements = elements.map((e) => IotWidgetElement.fromJson(e)).toList();
   }
 }

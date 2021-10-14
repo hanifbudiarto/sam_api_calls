@@ -1,14 +1,18 @@
-export 'analytic_resource.dart';
-export 'analytic_widget.dart';
-export 'analytics.dart';
-export 'analytic_resource.dart';
-export 'chart_action_type.dart';
-export 'chart_option.dart';
-export 'element_resources.dart';
-export 'map_settings.dart';
-export 'option_resource.dart';
-export 'resource.dart';
-export 'analytics_resources.dart';
-export 'chart_action.dart';
-export 'chart_event.dart';
-export 'option.dart';
+library sam_models_analytics;
+
+import 'package:sam_api_calls/models/device/device.dart';
+
+part 'analytic_resource.dart';
+part 'analytic_widget.dart';
+part 'analytics.dart';
+part 'chart_action_type.dart';
+part 'chart_option.dart';
+part 'element_resources.dart';
+part 'map_settings.dart';
+part 'option_resource.dart';
+part 'resource.dart';
+part 'analytics_resources.dart';
+part 'chart_action.dart';
+part 'chart_event.dart';
+part 'option.dart';
+part 'analytic_widget_param.dart';

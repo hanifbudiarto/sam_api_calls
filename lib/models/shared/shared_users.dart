@@ -1,16 +1,18 @@
-import 'package:sam_api_calls/models/shared/shared_user.dart';
+part of sam_models_shared;
 
 class SharedUsers {
-  List<SharedUser> list;
+  late final List<SharedUser> list;
 
-  SharedUsers({this.list});
-
-  factory SharedUsers.fromJson(List<dynamic> json) {
+  SharedUsers({required this.list});
+  
+  SharedUsers.fromJson(Map<String, dynamic> json) {
     List<SharedUser> newList = [];
 
-    if (json.contains("body")) {
-      newList.addAll(json.map((dev) => SharedUser.fromJson(dev)).toList());
+    if (json.containsKey('body')) {
+	  var results = json['body'] as List;
+      newList.addAll(results.map((dev) => SharedUser.fromJson(dev)).toList());
     }
-    return SharedUsers(list: newList);
+
+    this.list = newList;
   }
 }

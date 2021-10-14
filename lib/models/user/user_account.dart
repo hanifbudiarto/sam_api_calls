@@ -1,59 +1,58 @@
-class UserAccount {
-  String userId;
-  String userFname, userLname;
-  String userEmail, userPhone;
-  String userAvatar;
-  String userPassword;
+part of sam_models_users;
 
-  String orgName, orgAddr1, orgAddr2, orgCity;
-  String orgProvince, orgCountry, orgZip;
-  String orgWeb, orgEmail, orgPhone;
+class UserAccount {
+  late final String userId;
+  late final String userFname, userLname;
+  late final String userEmail, userPhone;
+  late final String userAvatar;
+  late final String userPassword;
+
+  late final String orgName, orgAddr1, orgAddr2, orgCity;
+  late final String orgProvince, orgCountry, orgZip;
+  late final String orgWeb, orgEmail, orgPhone;
 
   UserAccount(
-      {this.userId,
-      this.userFname,
-      this.userLname,
-      this.userEmail,
-      this.userPhone,
-      this.userAvatar,
-      this.userPassword,
-      this.orgName,
-      this.orgAddr1,
-      this.orgAddr2,
-      this.orgCity,
-      this.orgProvince,
-      this.orgCountry,
-      this.orgZip,
-      this.orgWeb,
-      this.orgEmail,
-      this.orgPhone});
+      {required this.userId,
+      required this.userFname,
+      required this.userLname,
+      required this.userEmail,
+      required this.userPhone,
+      required this.userAvatar,
+      required this.userPassword,
+      required this.orgName,
+      required this.orgAddr1,
+      required this.orgAddr2,
+      required this.orgCity,
+      required this.orgProvince,
+      required this.orgCountry,
+      required this.orgZip,
+      required this.orgWeb,
+      required this.orgEmail,
+      required this.orgPhone});
 
-  factory UserAccount.fromJson(Map<String, dynamic> json) {
-    return UserAccount(
-      userId: json["user_id"],
-      userFname: json["user_fname"],
-      userLname: json["user_lname"],
-      userEmail: json["user_email"],
-      userPhone: json["user_phone"],
-      userAvatar: ifNull(json["user_avatar"]),
-      orgName: ifNull(json["org_name"]),
-      orgAddr1: ifNull(json["org_addr1"]),
-      orgAddr2: ifNull(json["org_addr2"]),
-      orgCity: ifNull(json["org_city"]),
-      orgProvince: ifNull(json["org_province"]),
-      orgCountry: ifNull(json["org_country"]),
-      orgZip: ifNull(json["org_zip"]),
-      orgWeb: ifNull(json["org_web"]),
-      orgEmail: ifNull(json["org_email"]),
-      orgPhone: ifNull(json["org_phone"])
-    );
+  UserAccount.fromJson(Map<String, dynamic> json) {
+    this.userId = json['user_id'];
+    this.userFname = json['user_fname'];
+    this.userLname = json['user_lname'];
+    this.userEmail = json['user_email'];
+    this.userPhone = json['user_phone'];
+    this.userAvatar = ifNull(json['user_avatar']);
+    this.orgName = ifNull(json['org_name']);
+    this.orgAddr1 = ifNull(json['org_addr1']);
+    this.orgAddr2 = ifNull(json['org_addr2']);
+    this.orgCity = ifNull(json['org_city']);
+    this.orgProvince = ifNull(json['org_province']);
+    this.orgCountry = ifNull(json['org_country']);
+    this.orgZip = ifNull(json['org_zip']);
+    this.orgWeb = ifNull(json['org_web']);
+    this.orgEmail = ifNull(json['org_email']);
+    this.orgPhone = ifNull(json['org_phone']);
   }
 
   static dynamic ifNull(dynamic jsonValue) {
-    if (jsonValue.toString() == "null") {
-      return "";
-    }
-    else return jsonValue;
+    if (jsonValue.toString() == 'null') {
+      return '';
+    } else
+      return jsonValue;
   }
 }
-

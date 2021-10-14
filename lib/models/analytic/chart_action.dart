@@ -1,62 +1,58 @@
-
-import 'package:sam_api_calls/models/analytic/chart_action_type.dart';
+part of sam_models_analytics;
 
 class ChartAction {
-  ChartActionType inputType;
-  List<String> inputSource;
-  String enteredValue;
+  late final ChartActionType inputType;
+  List<String>? inputSource;
+  String? enteredValue;
 
-  ChartAction({this.inputType, this.inputSource, this.enteredValue});
+  ChartAction(
+      {required this.inputType, this.inputSource, this.enteredValue});
 
   static ChartActionType getAction(String type) {
     switch (type) {
-      case "colorpicker":
+      case 'colorpicker':
         return ChartActionType.COLORPICKER;
-      case "dropdown":
+      case 'dropdown':
         return ChartActionType.DROPDOWN;
-      case "radio":
+      case 'radio':
         return ChartActionType.RADIO;
-      case "number":
+      case 'number':
         return ChartActionType.NUMBER;
-      case "range":
+      case 'range':
         return ChartActionType.RANGE;
-      case "text":
-        return ChartActionType.TEXT;
+      case 'text':
       default:
-        return null;
+        return ChartActionType.TEXT;
     }
   }
 
   static String getActionString(ChartActionType type) {
     switch (type) {
       case ChartActionType.COLORPICKER:
-        return "colorpicker";
+        return 'colorpicker';
       case ChartActionType.DROPDOWN:
-        return "dropdown";
+        return 'dropdown';
       case ChartActionType.RADIO:
-        return "radio";
+        return 'radio';
       case ChartActionType.NUMBER:
-        return "number";
+        return 'number';
       case ChartActionType.RANGE:
-        return "range";
+        return 'range';
       case ChartActionType.TEXT:
-        return "text";
       default:
-        return null;
+        return 'text';
     }
   }
 
-  factory ChartAction.fromJson(Map<String, dynamic> json) {
+  ChartAction.fromJson(Map<String, dynamic> json) {
     List<String> sources = [];
     if (json.containsKey('input_source') && json['input_source'] != null) {
-      sources = json['input_source'].cast<String>();
+      sources = List<String>.from(json['input_source']);
     }
 
-    return ChartAction(
-      inputType: ChartAction.getAction(json['input_type']),
-      inputSource: sources,
-      enteredValue: json['entered_value'].toString(),
-    );
+    this.inputType = ChartAction.getAction(json['input_type']);
+    this.inputSource = sources;
+    this.enteredValue = json['entered_value'].toString();
   }
 
   Map<String, dynamic> toJson() {

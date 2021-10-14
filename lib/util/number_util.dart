@@ -1,7 +1,7 @@
+part of sam_utils;
+
 class NumberUtil {
   static String removeTrailingZero(num n) {
-    if (n == null) return "";
-
     String numStr = n.toString();
     if (numStr.contains(".")) {
       String newNumStr = "";

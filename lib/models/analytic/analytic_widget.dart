@@ -1,31 +1,29 @@
-import 'package:sam_api_calls/models/analytic/chart_option.dart';
+part of sam_models_analytics;
 
 class AnalyticWidget {
-  String id;
-  String title;
-  String model;
-  ChartOptions options;
-  String adminId;
+  late final String id;
+  late final String title;
+  late final String model;
+  late final ChartOptions? options;
+  late final String adminId;
 
   AnalyticWidget(
-      {this.id,
-        this.title,
-        this.model,
-        this.options,
-        this.adminId});
+      {required this.id,
+      required this.title,
+      required this.model,
+      required this.options,
+      required this.adminId});
 
-  factory AnalyticWidget.fromJson(Map<String, dynamic> json) {
+  AnalyticWidget.fromJson(Map<String, dynamic> json) {
     try {
-      return AnalyticWidget(
-          id: json['id'],
-          title: json['title'],
-          model: json['model'],
-          options: ChartOptions.fromJson(json),
-          adminId: json['admin_id']);
+      this.id = json['id'];
+      this.title = json['title'];
+      this.model = json['model'];
+      this.options = ChartOptions.fromJson(json);
+      this.adminId = json['admin_id'];
     } catch (e) {
       print("Analytic fromJson ${e.toString()}");
     }
-    return null;
   }
 
   Map<String, dynamic> toJson() {
@@ -33,7 +31,7 @@ class AnalyticWidget {
     data['id'] = this.id;
     data['title'] = this.title;
     data['model'] = this.model;
-    data['options'] = this.options != null ? this.options.toJson() : null;
+    data['options'] = this.options != null ? this.options!.toJson() : null;
     data['admin_id'] = this.adminId;
     return data;
   }

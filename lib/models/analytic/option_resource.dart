@@ -1,13 +1,13 @@
-import 'package:sam_api_calls/models/analytic/map_settings.dart';
+part of sam_models_analytics;
 
 class OptionResource {
-  int elementIndex;
-  String rule;
-  num threshold;
-  bool notify;
-  bool alert;
-  String text;
-  MapSettings mapSettings;
+  late int elementIndex;
+  late String rule;
+  late num threshold;
+  late bool notify;
+  late bool alert;
+  late String text;
+  late MapSettings mapSettings;
 
   OptionResource(
       {this.elementIndex = -1,
@@ -16,20 +16,19 @@ class OptionResource {
       this.notify = false,
       this.alert = false,
       this.text = "",
-      MapSettings mapSettings})
+      MapSettings? mapSettings})
       : this.mapSettings = mapSettings == null ? MapSettings() : mapSettings;
 
-  factory OptionResource.fromJson(Map<String, dynamic> json) {
-    return OptionResource(
-        elementIndex: json.containsKey("index") ? json["index"] : -1,
-        rule: json["rule"],
-        threshold: json["threshold"],
-        notify: json["notify"],
-        alert: json["alert"],
-        text: json["text"],
-        mapSettings: json.containsKey("map_settings")
-            ? MapSettings.fromJson(json["map_settings"])
-            : MapSettings());
+  OptionResource.fromJson(Map<String, dynamic> json) {
+    this.elementIndex = json.containsKey("index") ? json["index"] : -1;
+    this.rule = json['rule'];
+    this.threshold = json['threshold'];
+    this.notify = json['notify'];
+    this.alert = json['alert'];
+    this.text = json['text'];
+    this.mapSettings= json.containsKey("map_settings")
+    ? MapSettings.fromJson(json["map_settings"])
+        : MapSettings();
   }
 
   Map<String, dynamic> toJson() {

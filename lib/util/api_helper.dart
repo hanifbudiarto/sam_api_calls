@@ -1,4 +1,4 @@
-import 'dart:convert';
+part of sam_utils;
 
 class ApiHelper {
   static const String HEADER_API_KEY = "Api-Key";

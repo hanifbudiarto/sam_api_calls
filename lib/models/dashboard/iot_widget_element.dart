@@ -1,33 +1,32 @@
-import 'package:flutter/material.dart';
+part of sam_models_dashboards;
 
 class IotWidgetElement {
-  String id;
-  String title;
-  String icon;
-  bool settable;
-  bool retained;
-  int numOfParameters;
-  List<String> acceptedParameters;
+  late final String id;
+  late final String title;
+  late final String icon;
+  late final bool settable;
+  late final bool retained;
+  late final int numOfParameters;
+  late final List<String> acceptedParameters;
 
   IotWidgetElement(
-      {@required this.id,
-        @required this.title,
-        @required this.icon,
-        @required this.settable,
-        @required this.retained,
-        @required this.numOfParameters,
-        @required this.acceptedParameters});
+      {required this.id,
+      required this.title,
+      required this.icon,
+      required this.settable,
+      required this.retained,
+      required this.numOfParameters,
+      required this.acceptedParameters});
 
-  factory IotWidgetElement.fromJson(Map<String, dynamic> json) {
-    var acceptedParams = json["accepted_parameters"] as List;
+  IotWidgetElement.fromJson(Map<String, dynamic> json) {
+    var acceptedParams = json['accepted_parameters'] as List;
 
-    return IotWidgetElement(
-        id: json["id"],
-        title: json["title"],
-        icon: json["icon"],
-        settable: json["settable"],
-        retained: json["retained"],
-        numOfParameters: json["num_of_parameters"],
-        acceptedParameters: acceptedParams.map((a) => a.toString()).toList());
+    this.id = json['id'];
+    this.title = json['title'];
+    this.icon = json['icon'];
+    this.settable = json['settable'];
+    this.retained = json['retained'];
+    this.numOfParameters = json['num_of_parameters'];
+    this.acceptedParameters = acceptedParams.map((a) => a.toString()).toList();
   }
 }

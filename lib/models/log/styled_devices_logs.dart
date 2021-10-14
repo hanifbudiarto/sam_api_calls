@@ -1,30 +1,20 @@
-import 'package:sam_api_calls/models/log/ohlc.dart';
+part of sam_models_logs;
 
 class StyledDevicesLogs {
-  final int totalrecords;
-  final List<Ohlc> list;
+  late final List<Ohlc> list;
 
-  StyledDevicesLogs({this.totalrecords, this.list});
+  StyledDevicesLogs({required this.list});
 
-  factory StyledDevicesLogs.fromJson(Map<String, dynamic> json) {
-    int total = 0;
-
-    if (json.containsKey("totalrecords")) {
-      try {
-        total = int.tryParse(json["totalrecords"].toString());
-      } on FormatException {}
-    }
-
+  StyledDevicesLogs.fromJson(Map<String, dynamic> json) {
     List<Ohlc> list = [];
 
-    if (json.containsKey("body")) {
-      var collection = json["body"] as List;
+    if (json.containsKey('body')) {
+      var collection = json['body'] as List;
       list = collection
           .map((c) => Ohlc.fromJson(c))
-          .where((oh) => oh != null)
           .toList();
     }
 
-    return StyledDevicesLogs(totalrecords: total, list: list);
+    this.list = list;
   }
 }

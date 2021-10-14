@@ -1,32 +1,32 @@
-import 'package:flutter/material.dart';
-import 'package:sam_api_calls/models/dashboard/dashboard_profile_data.dart';
+part of sam_models_dashboards;
 
 class DashboardProfile {
-  String id;
-  String name;
-  DashboardProfileData data;
+  late final String id;
+  late final String name;
+  late final DashboardProfileData data;
 
   DashboardProfile(
-      {@required this.id, @required this.name, @required this.data});
+      {required this.id, required this.name, required this.data});
 
-  factory DashboardProfile.fromJson(Map<String, dynamic> json) {
-    return DashboardProfile(
-        id: json["id"].toString(),
-        name: json["name"],
-        data: DashboardProfileData.fromJson(json["data"]));
+  DashboardProfile.fromJson(Map<String, dynamic> json) {
+    this.id = json['id'].toString();
+    this.name = json['name'];
+    this.data = DashboardProfileData.fromJson(json['data']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> result = new Map<String, dynamic>();
 
-    result["name"] = name;
-    result["data"] = data.toJson();
+    result['name'] = name;
+    result['data'] = data.toJson();
 
     return result;
   }
 
   @override
-  operator ==(other) => other.id == id;
+  bool operator ==(other) {
+    return (other is DashboardProfile) && other.id == id;
+  }
 
   @override
   int get hashCode => id.hashCode ^ name.hashCode;

@@ -1,13 +1,12 @@
+import 'package:api_calls_example/secure_storage.dart';
+import 'package:api_calls_example/unsafe_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sam_api_calls/contracts/contracts.dart';
-import 'package:sam_api_calls/impl/secure_storage.dart';
-import 'package:sam_api_calls/impl/unsafe_storage.dart';
-
 class LocalServiceImpl implements LocalService {
   LocalStorage _storage;
 
   @override
-  Future<LocalStorage> getStorage() async {
+  Future<LocalStorage> getStorage({String path}) async {
     if (_storage == null) {
       _storage = SecureStorage();
       bool secureStorageComplete = await _storage.init();

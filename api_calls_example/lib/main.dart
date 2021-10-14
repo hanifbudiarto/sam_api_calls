@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:sam_api_calls/sam_api_calls.dart';
+import 'package:sam_api_calls/impl/impl.dart';
+import 'package:sam_api_calls/models/models.dart';
+import 'local_service_impl.dart';
 
 void main() {
   runApp(MyApp());
@@ -72,12 +74,12 @@ class _MyHomePageState extends State<MyHomePage> {
     final dataService = DataServiceImpl(dio: userDio);
 
     final localService = LocalServiceImpl();
+
+    final Dio authDio = Dio(BaseOptions(baseUrl: ApiEndpoints.HOST));
     final authService =
-    AuthServiceImpl(storage: localService, interceptors: []);
+        AuthServiceImpl(storage: localService, interceptors: [], dio: authDio);
     final authInterceptor = AuthInterceptor(
-        dio: userDio,
-        authService: authService,
-        onRefreshedToken: () async {});
+        dio: userDio, authService: authService, onRefreshedToken: () async {});
     userDio.interceptors.addAll([authInterceptor]);
 
     final Dio appDio = Dio(BaseOptions(baseUrl: ApiEndpoints.BASE_URL));
@@ -90,34 +92,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
       return client;
     };
-    final appInterceptor = AppInterceptor(
-        dio: appDio, authService: authService);
+    final appInterceptor =
+        AppInterceptor(dio: appDio, authService: authService);
     appDio.interceptors.addAll([appInterceptor]);
 
     // final appService = AppServiceImpl(dio: appDio);
     // final publicService = PublicServiceImpl();
 
-    final BasicAuth appAuth = BasicAuth(
-        username: "",
-        password:
-        "");
+    final BasicAuth appAuth = BasicAuth(username: "", password: "");
     final appToken =
         await authService.generateAppToken(appAuth.username, appAuth.password);
     print(appToken.accessToken);
 
-    final deviceToken =
-    await authService.generateDeviceToken("", "");
+    final deviceToken = await authService.generateDeviceToken("", "");
     print(deviceToken.accessToken);
 
-    final userToken = await authService.generateUserToken(
-        "", "", appToken.accessToken);
+    final userToken =
+        await authService.generateUserToken("", "", appToken.accessToken);
     print(userToken.accessToken);
 
     await authService
         .saveTokens(
-        appToken: appToken,
-        userToken: userToken,
-        deviceToken: deviceToken)
+            appToken: appToken, userToken: userToken, deviceToken: deviceToken)
         .catchError((e) {
       print(e.toString());
     });

@@ -1,3 +1,5 @@
+part of sam_models;
+
 class LocalServiceKeys {
   // indikator open landing page hanya sekali
   static const String ARGUMENT_FIRST_LANDING = "first_landing";

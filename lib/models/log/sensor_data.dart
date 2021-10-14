@@ -1,33 +1,34 @@
-
-
-import 'package:sam_api_calls/models/device/device.dart';
-import 'package:sam_api_calls/util/util.dart';
+part of sam_models_logs;
 
 class SensorData {
-  DateTime datein;
-  String value;
-  String additionalValue;
+  late DateTime datein;
+  late String value;
+  late String additionalValue;
 
-  SensorData({this.datein, this.value, this.additionalValue});
+  SensorData(
+      {required this.datein,
+      required this.value,
+      required this.additionalValue});
 
-  factory SensorData.fromJson(Map<String, dynamic> json, Property prop) {
-    String valueJson = json["value"].toString();
-    String addValue;
-    if (valueJson.contains("|")) {
-      List<String> valueJsonSplitted = valueJson.split("|");
+  SensorData.fromJson(Map<String, dynamic> json, Property prop) {
+    String valueJson = json['value'].toString();
+    String addValue = '';
+    if (valueJson.contains('|')) {
+      List<String> valueJsonSplitted = valueJson.split('|');
       if (valueJsonSplitted.length > 1) {
         valueJson = valueJsonSplitted[0];
         addValue = valueJsonSplitted[1];
       }
     }
 
-    if (prop != null && prop.datatype != null && (prop.datatype.toLowerCase() == "float" || prop.datatype.toLowerCase() == "integer")){
+    if (prop.datatype != null &&
+        (prop.datatype!.toLowerCase() == 'float' ||
+            prop.datatype!.toLowerCase() == 'integer')) {
       valueJson = NumberUtil.removeTrailingZero(num.parse(valueJson));
     }
 
-    return SensorData(
-        datein: DateUtil.convertToLocalDate(json["datein"].toString()),
-        value: valueJson,
-        additionalValue: addValue);
+    this.datein = DateUtil.convertToLocalDate(json['datein'].toString());
+    this.value = valueJson;
+    this.additionalValue = addValue;
   }
 }

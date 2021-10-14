@@ -1,7 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:sam_api_calls/models/models.dart';
+part of sam_contracts;
 
 abstract class DataService {
   // dashboard
@@ -13,7 +10,7 @@ abstract class DataService {
 
   Future<bool> putDashboard(DashboardProfile newProfile);
 
-  Future<bool> deleteDashboard(DashboardProfile profile);
+  Future<bool> deleteDashboard(String profileId);
 
   // etc
   Future<Cities> getCitiesByKeyword(String keyword);
@@ -37,30 +34,29 @@ abstract class DataService {
   // Devices
   Future<Devices> getDeviceBySN(String sn);
 
-  Future<bool> putClaimDevice(DeviceIot device, UserAccount account);
+  Future<bool> putClaimDevice(DeviceClaimParam param);
 
-  Future<bool> putDevice(DeviceIot device);
+  Future<bool> putDevice(DeviceClaimParam param, DeviceOption options);
 
   Future<Devices> getAllDevices();
 
   Future<Devices> getDevices(
-      {int limit = 0, int offset = 0, String keyword = ""});
+      {int limit = 0, int offset = 0, String keyword = ''});
 
   Future<SharedDevices> getSharedDevices();
 
-  Future<bool> deleteDevice(DeviceIot device);
+  Future<bool> deleteDevice(String deviceId);
 
-  Future<SharedUsers> getSharedUserByDeviceId(DeviceIot device);
+  Future<SharedUsers> getSharedUserByDeviceId(String deviceId);
 
-  Future<bool> deleteUnlinkDeviceFromUser(DeviceIot device, UserAccount user);
+  Future<bool> deleteUnlinkDeviceFromUser(String deviceId, String userId);
 
   Future<String> postShareDeviceViaEmail(
-      DeviceIot device, UserAccount destinationAccount);
+      String deviceId, String? destinationEmail);
 
-  Future<bool> postAcceptSharedDevice(
-      DeviceIot device, String verificationCode);
+  Future<bool> postAcceptSharedDevice(String deviceId, String vcode);
 
-  Future<bool> postIgnoreSharedDevice(SharedDevice sharedDevice);
+  Future<bool> postIgnoreSharedDevice(String deviceId, String vcode);
 
   Future<Devices> getDeviceById(String id);
 
@@ -71,46 +67,44 @@ abstract class DataService {
   Future<Analytics> getMyAnalytics();
 
   Future<Analytics> getAnalytics(
-      {int limit = 0, int offset = 0, String keyword = ""});
+      {int limit = 0, int offset = 0, String keyword = ''});
 
   Future<SharedAnalytics> getSharedAnalytics();
 
   // add new analytic (title, model, type)
-  Future<AnalyticWidget> postNewAnalytic(AnalyticWidget analytic);
+  Future<AnalyticWidget> postNewAnalytic(AnalyticWidgetParam param);
 
   // get analytic resources by analytic id
-  Future<AnalyticsResources> getAnalyticsResources(AnalyticWidget analytic);
+  Future<AnalyticsResources> getAnalyticsResources(String analyticId);
 
   // get devices logs data
-  Future<DevicesLogs> getDevicesLogs(Resource resource,
-      {@required int limit, DateTime timeStart});
+  Future<DevicesLogs> getDevicesLogs(DevicesLogsParam param,
+      {DateTime? timeStart});
 
-  Future<StyledDevicesLogs> getStyledDevicesLogs(Resource resource,
-      {@required int limit, @required String style, int timeframe});
+  Future<StyledDevicesLogs> getStyledDevicesLogs(
+      DevicesLogsParam param, LogsStyle style, int timeframeMinutes);
 
   // update analytic
-  Future<bool> putAnalytic(AnalyticWidget analytic);
+  Future<bool> putAnalytic(
+      String analyticId, AnalyticWidgetParam param, ChartOptions options);
 
   // update analytic resources
   Future<bool> postAnalyticsResources(AnalyticResource analyticResource);
 
   // delete analytic resource of analytic
-  Future<bool> deleteAnalyticsResourcesByAnalytic(AnalyticWidget analytic);
+  Future<bool> deleteAnalyticsResourcesByAnalytic(String analyticId);
 
-  Future<bool> deleteAnalytic(AnalyticWidget analytic);
+  Future<bool> deleteAnalytic(String analyticId);
 
-  Future<SharedUsers> getSharedUserByAnalyticId(AnalyticWidget analytic);
+  Future<SharedUsers> getSharedUserByAnalyticId(String analyticId);
 
-  Future<String> postShareAnalytic(
-      AnalyticWidget analytic, UserAccount destinationAccount);
+  Future<String> postShareAnalytic(String analyticId, String? destinationEmail);
 
-  Future<bool> deleteUnlinkAnalyticFromUser(
-      AnalyticWidget analytic, UserAccount user);
+  Future<bool> deleteUnlinkAnalyticFromUser(String analyticId, String userId);
 
-  Future<bool> postAcceptSharedAnalytic(
-      AnalyticWidget analytic, String verificationCode);
+  Future<bool> postAcceptSharedAnalytic(String analyticId, String vcode);
 
-  Future<bool> postIgnoreSharedAnalytic(SharedAnalytic sharedAnalytic);
+  Future<bool> postIgnoreSharedAnalytic(String analyticId, String vcode);
 
   Future<Analytics> getAnalyticById(String id);
 

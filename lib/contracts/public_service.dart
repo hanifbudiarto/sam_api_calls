@@ -1,5 +1,5 @@
-import 'package:sam_api_calls/models/models.dart';
+part of sam_contracts;
 
 abstract class PublicService {
-  Future<List<IotWidget>> getWidgetsCollection({String path});
+  Future<List<IotWidget>> getWidgetsCollection({String? jsonString});
 }

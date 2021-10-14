@@ -1,25 +1,22 @@
+part of sam_models_users;
+
 class UserProfile {
-  String userId;
-  String userFname, userLname;
-  String userEmail, userPhone;
+  late final String userId;
+  late final String userFname, userLname;
+  late final String userEmail, userPhone;
 
   UserProfile(
-      {this.userId,
-      this.userFname,
-      this.userLname,
-      this.userEmail,
-      this.userPhone});
+      {required this.userId,
+      required this.userFname,
+      required this.userLname,
+      required this.userEmail,
+      required this.userPhone});
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) {
-    if (json.containsKey("body")) {
-      return UserProfile(
-          userFname: json["body"]['user_fname'],
-          userLname: json["body"]['user_lname'],
-          userEmail: json["body"]['user_email'],
-          userPhone: json["body"]['user_phone'],
-          userId: json["body"]['user_id'].toString());
-    }
-
-    return null;
+  UserProfile.fromJson(Map<String, dynamic> json) {
+    this.userFname = json['user_fname'];
+    this.userLname = json['user_lname'];
+    this.userEmail = json['user_email'];
+    this.userPhone = json['user_phone'];
+    this.userId = json['user_id'].toString();
   }
 }

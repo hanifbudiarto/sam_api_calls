@@ -1,34 +1,35 @@
-import 'package:flutter/material.dart';
-import 'package:sam_api_calls/models/analytic/resource.dart';
+part of sam_models_analytics;
 
 class ElementResources {
-  String elementId;
-  List<String> resourcesId;
-  List<Resource> resources;
+  late String elementId;
+  late List<String> resourcesId;
+  late List<Resource> resources;
 
   ElementResources(
-      {@required this.elementId, @required this.resourcesId, this.resources});
+      {this.elementId = "",
+      this.resourcesId = const <String>[],
+      this.resources = const <Resource>[]});
 
-  factory ElementResources.fromJson(Map<String, dynamic> json) {
+  ElementResources.fromJson(Map<String, dynamic> json) {
     List<String> res = [];
-    var map = json["resources_id"] as List;
+    var map = json['resources_id'] as List;
     map.forEach((m) {
       res.add(m.toString());
     });
-
-    return ElementResources(elementId: json["element_id"], resourcesId: res);
+    if (json.containsKey('element_id')) {
+      this.elementId = json['element_id'];
+    } else {
+      this.elementId = "";
+    }
+    this.resourcesId = res;
+    this.resources = [];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> result = new Map<String, dynamic>();
-    result["element_id"] = elementId;
-    if (this.resources != null && resources.length > 0) {
-      result["resources_id"] =
-          this.resources.map((res) => res.resourceId.toString()).toList();
-    } else {
-      result["resources_id"] = [];
-    }
-
+    result['element_id'] = elementId;
+    result['resources_id'] =
+        this.resources.map((res) => res.resourceId.toString()).toList();
     return result;
   }
 }

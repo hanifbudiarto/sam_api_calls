@@ -1,14 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:sam_api_calls/models/device/device_iot.dart';
+part of sam_models_devices;
 
 class ValidDevice {
   final String id;
   final DeviceIot device;
   final bool valid;
 
-  ValidDevice({@required this.id, @required this.device, @required this.valid});
+  ValidDevice({required this.id, required this.device, required this.valid});
 
-  operator ==(validDevice) => validDevice.id == id;
+  @override
+  bool operator ==(other) {
+    return (other is ValidDevice) && other.id == id;
+  }
 
   int get hashCode => id.hashCode;
 }

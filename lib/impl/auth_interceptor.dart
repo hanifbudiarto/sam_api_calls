@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:sam_api_calls/contracts/contracts.dart';
+part of sam_impl;
 
 class AuthInterceptor extends Interceptor {
   final Dio _dio;
@@ -10,16 +6,17 @@ class AuthInterceptor extends Interceptor {
   final VoidCallback _onRefreshedToken;
 
   AuthInterceptor(
-      {@required Dio dio,
-      @required AuthService authService,
-      @required VoidCallback onRefreshedToken})
+      {required Dio dio,
+      required AuthService authService,
+      required VoidCallback onRefreshedToken})
       : this._dio = dio,
         this._authService = authService,
         this._onRefreshedToken = onRefreshedToken;
 
   @override
-  Future onRequest(RequestOptions options) async {
-    String accessToken = await _authService.getCurrentUserAccessToken();
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    String? accessToken = await _authService.getCurrentUserAccessToken();
 
     if (accessToken != null) {
       options.headers.remove(HttpHeaders.authorizationHeader);
@@ -27,31 +24,25 @@ class AuthInterceptor extends Interceptor {
           "Bearer " + accessToken;
     }
 
-    return options;
+    return handler.next(options);
   }
 
   @override
-  Future onError(DioError error) async {
-
+  void onError(DioError error, ErrorInterceptorHandler handler) async {
     _dio.interceptors.requestLock.lock();
     _dio.interceptors.responseLock.lock();
 
-    if (error.response.statusCode == 401) {
-      print("masuk refresh auth");
-
+    if (error.response!.statusCode == 401) {
       await _authService
           .refreshAppToken(await _authService.getSavedAppRefreshToken())
           .then((appToken) async {
-        print("apptoken");
         await _authService
             .refreshDeviceToken(await _authService.getSavedDeviceRefreshToken())
             .then((deviceToken) async {
-          print("devicetoken");
           await _authService
               .refreshUserToken(await _authService.getSavedUserRefreshToken(),
                   appToken.accessToken)
               .then((userToken) async {
-            print("usertoken");
             await _authService.saveTokens(
                 appToken: appToken,
                 userToken: userToken,
@@ -59,30 +50,42 @@ class AuthInterceptor extends Interceptor {
 
             _onRefreshedToken();
 
-            RequestOptions options = error.response.request;
+            RequestOptions options = error.response!.requestOptions;
 
             _dio.interceptors.requestLock.unlock();
             _dio.interceptors.responseLock.unlock();
 
             return await _dio.request(
               options.path,
-              queryParameters: error.request.queryParameters,
-              data: error.request.data,
-              options: options,
+              queryParameters: error.requestOptions.queryParameters,
+              data: error.requestOptions.data,
+              options: Options(
+                  method: options.method,
+                  headers: options.headers,
+                  extra: options.extra,
+                  sendTimeout: options.sendTimeout,
+                  receiveTimeout: options.receiveTimeout,
+                  responseType: options.responseType,
+                  validateStatus: options.validateStatus,
+                  receiveDataWhenStatusError:
+                      options.receiveDataWhenStatusError,
+                  followRedirects: options.followRedirects,
+                  maxRedirects: options.maxRedirects,
+                  requestEncoder: options.requestEncoder,
+                  responseDecoder: options.responseDecoder,
+                  listFormat: options.listFormat,
+                  contentType: options.contentType),
             );
           });
         });
       }).catchError((e) {
         print(e.toString());
       });
-
     }
-
-    print("return langsung ke error");
 
     _dio.interceptors.requestLock.unlock();
     _dio.interceptors.responseLock.unlock();
 
-    return error;
+    return handler.next(error);
   }
 }

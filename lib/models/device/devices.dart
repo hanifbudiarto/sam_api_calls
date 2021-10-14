@@ -1,11 +1,11 @@
-import 'package:sam_api_calls/models/device/device_iot.dart';
+part of sam_models_devices;
 
 class Devices {
-  List<DeviceIot> list;
+  late final List<DeviceIot> list;
 
-  Devices({this.list});
+  Devices({required this.list});
 
-  factory Devices.fromJson(Map<String, dynamic> json) {
+  Devices.fromJson(Map<String, dynamic> json) {
     List<DeviceIot> devices = [];
 
     if (json.containsKey('body')) {
@@ -13,6 +13,6 @@ class Devices {
       devices = list.map((dev) => DeviceIot.fromJson(dev)).toList();
     }
 
-    return Devices(list: devices);
+    this.list = devices;
   }
 }

@@ -1,7 +1,6 @@
-import 'package:sam_api_calls/models/models.dart';
+part of sam_contracts;
 
 abstract class AuthService {
-  // Authenticate
   Future<AuthToken> generateAppToken(String key, String password);
 
   Future<AuthToken> refreshAppToken(String appRefreshToken);
@@ -19,11 +18,11 @@ abstract class AuthService {
   Future<bool> saveTokens(
       {AuthToken appToken, AuthToken userToken, AuthToken deviceToken});
 
-  Future<String> getCurrentUserAccessToken();
+  Future<String?> getCurrentUserAccessToken();
 
-  Future<String> getCurrentAppAccessToken();
+  Future<String?> getCurrentAppAccessToken();
 
-  Future<String> getCurrentDeviceAccessToken();
+  Future<String?> getCurrentDeviceAccessToken();
 
   Future<String> getSavedUserRefreshToken();
 

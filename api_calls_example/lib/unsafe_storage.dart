@@ -7,7 +7,7 @@ class UnsafeStorage implements LocalStorage {
   SharedPreferences prefs;
 
   @override
-  Future<bool> init() async {
+  Future<bool> init({String path}) async {
     if (prefs == null) {
       prefs = await SharedPreferences.getInstance();
     }

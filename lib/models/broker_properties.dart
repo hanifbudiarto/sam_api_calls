@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of sam_models;
 
 class BrokerProperties {
   final String address;
@@ -6,5 +6,5 @@ class BrokerProperties {
   final int port;
 
   BrokerProperties(
-      {@required this.address, @required this.protocol, @required this.port});
+      {required this.address, required this.protocol, required this.port});
 }

@@ -1,11 +1,13 @@
+part of sam_models_users;
+
 class UserAvatar {
-  String avatar;
+  late final String avatar;
 
-  UserAvatar({this.avatar});
+  UserAvatar({required this.avatar});
 
-  factory UserAvatar.fromJson(Map<String, dynamic> json) {
-    if (!json.containsKey("body")) return null;
-
-    return UserAvatar(avatar: json["body"]["user_avatar"]);
+  UserAvatar.fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('body')) {
+      this.avatar = json['body']['user_avatar'];
+    }
   }
 }

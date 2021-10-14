@@ -1,12 +1,12 @@
-import 'package:sam_api_calls/models/user/user.dart';
+part of sam_models_shared;
 
 class SharedUser {
-  final String sharedItemId;
-  final List<UserProfile> users;
+  late final String sharedItemId;
+  late final List<UserProfile> users;
 
-  SharedUser({this.sharedItemId, this.users});
+  SharedUser({required this.sharedItemId, required this.users});
 
-  factory SharedUser.fromJson(Map<String, dynamic> json) {
+  SharedUser.fromJson(Map<String, dynamic> json) {
     List<UserProfile> profiles = [];
 
     if (json.containsKey('shared_users')) {
@@ -14,10 +14,9 @@ class SharedUser {
       profiles = list.map((dev) => UserProfile.fromJson(dev)).toList();
     }
 
-    return SharedUser(
-        sharedItemId: json.containsKey("device_id")
-            ? json["device_id"].toString()
-            : json["analytic_id"].toString(),
-        users: profiles);
+    this.sharedItemId = json.containsKey('device_id')
+        ? json['device_id'].toString()
+        : json['analytic_id'].toString();
+    this.users = profiles;
   }
 }
