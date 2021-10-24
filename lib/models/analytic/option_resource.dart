@@ -8,6 +8,7 @@ class OptionResource {
   late bool alert;
   late String text;
   late MapSettings mapSettings;
+  late OptionRun? run;
 
   OptionResource(
       {this.elementIndex = -1,
@@ -16,7 +17,8 @@ class OptionResource {
       this.notify = false,
       this.alert = false,
       this.text = "",
-      MapSettings? mapSettings})
+      MapSettings? mapSettings,
+      this.run})
       : this.mapSettings = mapSettings == null ? MapSettings() : mapSettings;
 
   OptionResource.fromJson(Map<String, dynamic> json) {
@@ -26,9 +28,10 @@ class OptionResource {
     this.notify = json['notify'];
     this.alert = json['alert'];
     this.text = json['text'];
-    this.mapSettings= json.containsKey("map_settings")
-    ? MapSettings.fromJson(json["map_settings"])
+    this.mapSettings = json.containsKey("map_settings")
+        ? MapSettings.fromJson(json["map_settings"])
         : MapSettings();
+    run = json['run'] != null ? new OptionRun.fromJson(json['run']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +43,9 @@ class OptionResource {
     data['alert'] = this.alert;
     data['text'] = this.text;
     data['map_settings'] = this.mapSettings;
+    if (this.run != null) {
+      data['run'] = this.run!.toJson();
+    }
     return data;
   }
 }

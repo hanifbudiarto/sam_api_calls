@@ -1,5 +1,6 @@
 library sam_models_analytics;
 
+import 'package:sam_api_calls/models/analytic/option_run.dart';
 import 'package:sam_api_calls/models/device/device.dart';
 
 part 'analytic_resource.dart';
