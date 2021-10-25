@@ -2,7 +2,7 @@ class OptionAlarmDay {
   late bool enabled;
   late String at;
 
-  OptionAlarmDay({required this.enabled,required this.at});
+  OptionAlarmDay({this.enabled = false, this.at = ""});
 
   OptionAlarmDay.fromJson(Map<String, dynamic> json) {
     enabled = json['enabled'];
