@@ -27,11 +27,7 @@ class DashboardProfileData {
     if (json.containsKey('flows')) {
       var flowData = json['flows'] as List;
       flowData.forEach((element) {
-        IotWidget? iotWidget = SamIotWidgets.instance.collection
-            .singleWhereOrNull((wgt) => wgt.id == element['widget_id']);
-        if (iotWidget != null) {
-          flowList.add(DashboardItem.fromJson(element));
-        }
+        flowList.add(DashboardItem.fromJson(element));
       });
     }
 

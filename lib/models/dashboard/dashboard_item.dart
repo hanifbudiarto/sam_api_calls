@@ -1,6 +1,5 @@
 part of sam_models_dashboards;
 
-
 class DashboardItem {
   late int position;
   late int width; // default width on initial state is min_width
@@ -30,8 +29,14 @@ class DashboardItem {
     this.position = json['position'];
     this.width = json['width'];
     this.height = json['height'];
-    this.iotWidget = SamIotWidgets.instance.collection.singleWhereOrNull(
-            (wgt) => wgt.id == json['widget_id']);
+
+    if (json['widget_id'] == 'widget-flow') {
+      this.iotWidget = null;
+    } else {
+      this.iotWidget = SamIotWidgets.instance.collection
+          .singleWhereOrNull((wgt) => wgt.id == json['widget_id']);
+    }
+
     this.analyticId = json['analytic_id'];
     this.elementResources = list;
   }
@@ -42,7 +47,11 @@ class DashboardItem {
     result['position'] = position;
     result['width'] = width;
     result['height'] = height;
-    result['widget_id'] = iotWidget!.id;
+    if (analytic!.model == 'widget-flow') {
+      result['widget_id'] = 'widget-flow';
+    } else {
+      result['widget_id'] = iotWidget!.id;
+    }
     result['analytic_id'] = analytic!.id;
     result['element_resources'] = this
         .elementResources
