@@ -57,7 +57,7 @@ class DataServiceImpl extends DataService {
     try {
       final String body = json.encode({
         'name': name,
-        'data': {'items': []}
+        'data': {'items': [] }
       });
       return await _dio
           .post(ApiEndpoints.DASHBOARDS, data: body)
@@ -529,7 +529,9 @@ class DataServiceImpl extends DataService {
             param.deviceParameter, param.device);
         if (prop != null) {
           var devicesLogs = DevicesLogs.fromJson(value.data, prop);
-          int maxLimit = param.limit > devicesLogs.list.length ? devicesLogs.list.length : param.limit;
+          int maxLimit = param.limit > devicesLogs.list.length
+              ? devicesLogs.list.length
+              : param.limit;
 
           return DevicesLogs(
               list: devicesLogs.list.getRange(0, maxLimit).toList());
