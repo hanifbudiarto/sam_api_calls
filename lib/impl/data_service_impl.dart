@@ -681,11 +681,10 @@ class DataServiceImpl extends DataService {
   }
 
   @override
-  Future<bool> putAnalytic(String analyticId, AnalyticWidgetParam param,
-      ChartOptions options) async {
+  Future<bool> putAnalytic(String analyticId, AnalyticWidgetParam param) async {
     try {
       final String body = json.encode(
-          {'title': param.title, 'model': param.model, 'options': options});
+          {'title': param.title, 'model': param.model, 'options': param.options});
       return await _dio
           .put('${ApiEndpoints.ANALYTICS}/$analyticId', data: body)
           .then((value) => true);

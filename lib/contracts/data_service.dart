@@ -85,8 +85,7 @@ abstract class DataService {
       DevicesLogsParam param, LogsStyle style, int timeframeMinutes);
 
   // update analytic
-  Future<bool> putAnalytic(
-      String analyticId, AnalyticWidgetParam param, ChartOptions options);
+  Future<bool> putAnalytic(String analyticId, AnalyticWidgetParam param);
 
   // update analytic resources
   Future<bool> postAnalyticsResources(AnalyticResource analyticResource);
