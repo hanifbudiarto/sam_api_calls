@@ -6,7 +6,7 @@ class Resource {
   late final String deviceParameter;
   late String aliasParameter;
   late int operationMode;
-  late double operationValue;
+  late num operationValue;
   OptionResource? optionResource;
   DeviceIot? device;
 
