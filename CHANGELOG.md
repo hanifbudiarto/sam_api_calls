@@ -1,3 +1,5 @@
+## [0.1.42] - Bug fixes
+
 ## [0.1.41] - Fix getRange in range
 
 ## [0.1.40] - Include limit to devices logs param
