@@ -1,3 +1,5 @@
+## [0.1.43] - add isStorageInitialized
+
 ## [0.1.42] - Bug fixes
 
 ## [0.1.41] - Fix getRange in range

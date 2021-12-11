@@ -1,6 +1,6 @@
 name: sam_api_calls
 description: A new Dart package.
-version: 0.1.42
+version: 0.1.43
 homepage: http://www.samelement.com
 
 environment:

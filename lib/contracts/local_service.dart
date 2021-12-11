@@ -1,6 +1,8 @@
 part of sam_contracts;
 
 abstract class LocalService {
+  Future<bool> isStorageInitialized();
+
   Future<LocalStorage> getStorage({String path});
 
   Future<String?> read({required String key});
