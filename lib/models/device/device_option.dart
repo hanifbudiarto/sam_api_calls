@@ -37,6 +37,10 @@ class DeviceOption {
     alarmMessage = json.containsKey('alarmmsg')
         ? DeviceOptionMessage.fromJson(json['alarmmsg'])
         : DeviceOptionMessage();
+
+    if (json.containsKey("ble")) {
+      deviceBleConfig = DeviceBleConfig.fromJson(json["ble"]);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +51,7 @@ class DeviceOption {
     data['alert_checked'] = this.alarmChecked;
     data['notifymsg'] = this.notifyMessage;
     data['alarmmsg'] = this.alarmMessage;
+    data['ble'] = this.deviceBleConfig;
     return data;
   }
 }

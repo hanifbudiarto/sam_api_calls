@@ -1,3 +1,5 @@
+## [0.1.46] - ble device config fromJson toJson
+
 ## [0.1.45] - add ble configuration to device options
 
 ## [0.1.44] - fix compatibility
