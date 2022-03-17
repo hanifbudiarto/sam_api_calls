@@ -10,12 +10,12 @@ class DeviceOptionMessage {
   late String sMessage;
 
   DeviceOptionMessage(
-      {this.rMessage: '',
-        this.lMessage: '',
-        this.iMessage: '',
-        this.dMessage: '',
-        this.aMessage: '',
-        this.sMessage: ''});
+      {this.rMessage = '',
+        this.lMessage =  '',
+        this.iMessage =  '',
+        this.dMessage =  '',
+        this.aMessage = '',
+        this.sMessage =  ''});
 
   DeviceOptionMessage.fromJson(Map<String, dynamic> json) {
     this.rMessage = json['r_msg'];

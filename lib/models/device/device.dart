@@ -1,6 +1,6 @@
 library sam_models_devices;
 
-import 'package:sam_api_calls/models/dashboard/dashboard.dart';
+import 'package:sam_api_calls/models/device/device_ble_config.dart';
 import 'package:sam_api_calls/models/models.dart';
 
 part 'device_iot.dart';

@@ -2,7 +2,6 @@ library sam_models_dashboards;
 
 
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:sam_api_calls/models/analytic/analytic.dart';
 import 'package:sam_api_calls/models/models.dart';
 
 part 'dashboard_item.dart';

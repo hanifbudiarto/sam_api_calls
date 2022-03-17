@@ -1,3 +1,7 @@
+## [0.1.45] - add ble configuration to device options
+
+## [0.1.44] - fix compatibility
+
 ## [0.1.43] - add isStorageInitialized
 
 ## [0.1.42] - Bug fixes

@@ -3,19 +3,25 @@ part of sam_models_devices;
 class DeviceOption {
   late bool notify;
   late String notifyChecked;
-  late final DeviceOptionMessage notifyMessage;
+  late DeviceOptionMessage notifyMessage;
 
   late bool alarm;
   late String alarmChecked;
-  late final DeviceOptionMessage alarmMessage;
+  late DeviceOptionMessage alarmMessage;
+  DeviceBleConfig? deviceBleConfig;
 
   DeviceOption(
       {this.notify = false,
       this.alarm = false,
       this.notifyChecked = '',
       this.alarmChecked = '',
-      required this.notifyMessage,
-      required this.alarmMessage});
+      this.deviceBleConfig,
+      DeviceOptionMessage? notifyMessage,
+      DeviceOptionMessage? alarmMessage})
+      : this.notifyMessage =
+            notifyMessage == null ? DeviceOptionMessage() : notifyMessage,
+        this.alarmMessage =
+            alarmMessage == null ? DeviceOptionMessage() : alarmMessage;
 
   DeviceOption.fromJson(Map<String, dynamic> json) {
     notify = json['notify'];

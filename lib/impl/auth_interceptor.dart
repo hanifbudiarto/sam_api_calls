@@ -3,12 +3,12 @@ part of sam_impl;
 class AuthInterceptor extends Interceptor {
   final Dio _dio;
   final AuthService _authService;
-  final VoidCallback _onRefreshedToken;
+  final Function _onRefreshedToken;
 
   AuthInterceptor(
       {required Dio dio,
       required AuthService authService,
-      required VoidCallback onRefreshedToken})
+      required Function onRefreshedToken})
       : this._dio = dio,
         this._authService = authService,
         this._onRefreshedToken = onRefreshedToken;

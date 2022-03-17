@@ -1,32 +1,31 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage_with_init/flutter_secure_storage_with_init.dart';
 import 'package:sam_api_calls/contracts/contracts.dart';
 
 class SecureStorage implements LocalStorage {
-  FlutterSecureStorageWithInit storage;
+  FlutterSecureStorageWithInit? storage;
 
   @override
-  Future<bool> init({String path}) async {
+  Future<bool> init({String? path}) async {
     if (storage == null) {
       storage = FlutterSecureStorageWithInit();
     }
 
-    return await storage.init();
+    return await storage!.init();
   }
 
   @override
-  Future<String> read({@required String key}) async {
+  Future<String?> read({required String key}) async {
     try {
-      return await storage.read(key: key);
+      return await storage!.read(key: key);
     } catch (e) {
       return null;
     }
   }
 
   @override
-  Future<bool> write({@required String key, @required String value}) async {
+  Future<bool> write({required String key, required String value}) async {
     try {
-      await storage.write(key: key, value: value);
+      await storage!.write(key: key, value: value);
       return true;
     } catch (e) {
       return false;
@@ -36,7 +35,7 @@ class SecureStorage implements LocalStorage {
   @override
   Future<bool> clearAll() async {
     try {
-      await storage.deleteAll();
+      await storage!.deleteAll();
       return true;
     } catch (e) {
       return false;
@@ -44,9 +43,9 @@ class SecureStorage implements LocalStorage {
   }
 
   @override
-  Future<bool> clear({@required String key}) async {
+  Future<bool> clear({required String key}) async {
     try {
-      await storage.delete(key: key);
+      await storage!.delete(key: key);
       return true;
     } catch (e) {
       return false;
@@ -54,7 +53,7 @@ class SecureStorage implements LocalStorage {
   }
 
   @override
-  Future<bool> isContainsKey({@required String key}) async {
-    return await storage.containsKey(key: key);
+  Future<bool> isContainsKey({required String key}) async {
+    return await storage!.containsKey(key: key);
   }
 }
