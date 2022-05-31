@@ -7,8 +7,8 @@ class DeviceBleConfig {
 
   DeviceBleConfig.fromJson(Map<String, dynamic> json) {
     bleDevices = [];
-    if (json['ble'].toString() != 'null') {
-      json['ble'].forEach((v) {
+    if (json['devices'].toString() != 'null') {
+      json['devices'].forEach((v) {
         bleDevices.add(DeviceBle.fromJson(v));
       });
     }
@@ -16,7 +16,7 @@ class DeviceBleConfig {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['ble'] = bleDevices;
+    data['devices'] = bleDevices;
     return data;
   }
 }

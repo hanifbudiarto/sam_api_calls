@@ -1,3 +1,7 @@
+## [0.1.48] - fix devices logs timestart parameter, include milliseconds
+
+## [0.1.47] - fix ble - devices props
+
 ## [0.1.46] - ble device config fromJson toJson
 
 ## [0.1.45] - add ble configuration to device options
