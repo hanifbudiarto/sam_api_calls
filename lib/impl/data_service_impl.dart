@@ -508,6 +508,7 @@ class DataServiceImpl extends DataService {
   Future<DevicesLogs> getDevicesLogs(DevicesLogsParam param,
       {DateTime? timeStart}) async {
     try {
+      DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
       if (timeStart == null) {
         timeStart = DateTime.now().subtract(Duration(days: 30)).toUtc();
       }
@@ -518,7 +519,7 @@ class DataServiceImpl extends DataService {
                 'parameter': param.deviceParameter,
                 'communication': 'mqtt',
                 'limit': 1000000000,
-                'ts': timeStart.toString(),
+                'ts': formatter.format(timeStart).substring(0, 10),
                 'sortorder': 'desc'
               },
               options: Options(

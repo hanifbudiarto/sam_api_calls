@@ -1,3 +1,5 @@
+## [0.1.49] - fix devices logs timestart parameter remove ms, fixed range [0,10]
+
 ## [0.1.48] - fix devices logs timestart parameter, include milliseconds
 
 ## [0.1.47] - fix ble - devices props
