@@ -519,7 +519,7 @@ class DataServiceImpl extends DataService {
                 'parameter': param.deviceParameter,
                 'communication': 'mqtt',
                 'limit': 1000000000,
-                'ts': formatter.format(timeStart).substring(0, 10),
+                'ts': formatter.format(timeStart).substring(0, 19),
                 'sortorder': 'desc'
               },
               options: Options(
