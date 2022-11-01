@@ -27,7 +27,7 @@ class AppInterceptor extends Interceptor {
     _dio.interceptors.requestLock.lock();
     _dio.interceptors.responseLock.lock();
 
-    if (error.response!.statusCode == 401) {
+    if (error.response?.statusCode == 401) {
       // Refresh app token
       await _authService
           .getSavedAppRefreshToken()

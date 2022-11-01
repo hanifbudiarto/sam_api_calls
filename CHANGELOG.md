@@ -1,3 +1,5 @@
+## [0.1.51] - error.response?.statusCode null check
+
 ## [0.1.50] - range [0, 19] with seconds
 
 ## [0.1.49] - fix devices logs timestart parameter remove ms, fixed range [0,10]
