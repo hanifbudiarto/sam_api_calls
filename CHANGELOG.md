@@ -1,3 +1,5 @@
+## [0.2.0] - update intl version
+
 ## [0.1.89] - fix device toJson
 
 ## [0.1.88] - add datatype to sam iot widgets accepted parameters
