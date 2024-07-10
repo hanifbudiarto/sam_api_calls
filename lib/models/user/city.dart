@@ -8,19 +8,18 @@ class City {
   "district": "Mpumalanga"
    */
 
-  late final String id;
-  late final String name, countryCode, district;
+  final String id;
+  final String name, countryCode, district;
 
   City(
       {required this.id,
-      required this.name,
-      required this.countryCode,
-      required this.district});
+      this.name = "",
+      this.countryCode = "",
+      this.district = ""});
 
-  City.fromJson(Map<String, dynamic> json) {
-    this.id = json['id'].toString();
-    this.name = json['name'].toString();
-    this.countryCode = json['country_code'];
-    this.district = json['district'];
-  }
+  City.fromJson(Map<String, dynamic> json)
+      : this.id = json['id'].toString(),
+        this.name = ifNullReturnEmpty(json['name']),
+        this.countryCode = ifNullReturnEmpty(json['country_code']),
+        this.district = ifNullReturnEmpty(json['district']);
 }

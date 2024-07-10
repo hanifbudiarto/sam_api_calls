@@ -1,11 +1,13 @@
 part of sam_models_devices;
 
 class Devices {
-  late final List<DeviceIot> list;
+  final List<DeviceIot> list;
 
-  Devices({required this.list});
+  Devices({this.list = const <DeviceIot> []});
 
-  Devices.fromJson(Map<String, dynamic> json) {
+  Devices.fromJson(Map<String, dynamic> json) : this.list = getList(json);
+
+  static List<DeviceIot> getList(Map<String, dynamic> json) {
     List<DeviceIot> devices = [];
 
     if (json.containsKey('body')) {
@@ -13,6 +15,6 @@ class Devices {
       devices = list.map((dev) => DeviceIot.fromJson(dev)).toList();
     }
 
-    this.list = devices;
+    return devices;
   }
 }

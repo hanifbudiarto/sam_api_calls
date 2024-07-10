@@ -1,50 +1,67 @@
 part of sam_models_dashboards;
 
 class DashboardProfileData {
-  late List<DashboardItem> items;
-  late List<DashboardItem> flows;
-  String? background;
+  final List<DashboardItem> items;
+  final List<DashboardItem> flows;
+  final String background;
 
-  DashboardProfileData(
+  const DashboardProfileData(
       {this.items = const <DashboardItem>[],
       this.flows = const <DashboardItem>[],
-      this.background});
+      this.background = ""});
 
-  DashboardProfileData.fromJson(Map<String, dynamic> json) {
+  DashboardProfileData.fromJson(Map<String, dynamic>? json)
+      : this.flows = getFlowList(json),
+        this.items = getList(json),
+        this.background = json != null &&
+                json.runtimeType != Null &&
+                json.toString() != 'null' &&
+                json.containsKey('bg') &&
+                json['bg'] != null
+            ? json['bg']
+            : "";
+
+  static List<DashboardItem> getList(Map<String, dynamic>? json) {
     List<DashboardItem> list = [];
 
-    var data = json['items'] as List;
-    data.forEach((element) {
-      IotWidget? iotWidget = SamIotWidgets.instance.collection
-          .singleWhereOrNull((wgt) => wgt.id == element['widget_id']);
-      if (iotWidget != null) {
-        list.add(DashboardItem.fromJson(element));
-      }
-    });
+    if (json != null &&
+        json.runtimeType != Null &&
+        json.toString() != 'null' &&
+        json.containsKey('items') &&
+        json['items'] != null) {
+      var data = json['items'] as List;
+      data.forEach((element) {
+        IotWidget? iotWidget = SamIotWidgets.instance.collection
+            .singleWhereOrNull((wgt) => wgt.id == element['widget_id']);
+        if (iotWidget != null) {
+          list.add(DashboardItem.fromJson(element));
+        }
+      });
+    }
 
+    return list;
+  }
+
+  static List<DashboardItem> getFlowList(Map<String, dynamic>? json) {
     List<DashboardItem> flowList = [];
 
-    if (json.containsKey('flows')) {
+    if (json != null &&
+        json.runtimeType != Null &&
+        json.toString() != 'null' &&
+        json.containsKey('flows') &&
+        json['flows'] != null) {
       var flowData = json['flows'] as List;
       flowData.forEach((element) {
         flowList.add(DashboardItem.fromJson(element));
       });
     }
 
-    this.flows = flowList;
-    this.items = list;
-    this.background = json.containsKey('bg') ? json['bg'] : null;
+    return flowList;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = new Map<String, dynamic>();
-
-    result['bg'] = background;
-    result['items'] =
-        this.items.map((DashboardItem item) => item.toJson()).toList();
-    result['flows'] =
-        this.flows.map((DashboardItem item) => item.toJson()).toList();
-
-    return result;
-  }
+  Map<String, dynamic> toJson() => {
+        'bg': background,
+        'items': this.items.map((DashboardItem item) => item.toJson()).toList(),
+        'flows': this.flows.map((DashboardItem item) => item.toJson()).toList()
+      };
 }

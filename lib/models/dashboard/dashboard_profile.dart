@@ -1,27 +1,21 @@
 part of sam_models_dashboards;
 
 class DashboardProfile {
-  late final String id;
-  late final String name;
-  late final DashboardProfileData data;
+  final String id;
+  final String name;
+  final DashboardProfileData data;
 
-  DashboardProfile(
-      {required this.id, required this.name, required this.data});
+  DashboardProfile({required this.id, this.name = "", this.data = const DashboardProfileData()});
 
-  DashboardProfile.fromJson(Map<String, dynamic> json) {
-    this.id = json['id'].toString();
-    this.name = json['name'];
-    this.data = DashboardProfileData.fromJson(json['data']);
-  }
+  DashboardProfile.fromJson(Map<String, dynamic> json)
+      : this.id = json['id'].toString(),
+        this.name = ifNullReturnEmpty(json['name']),
+        this.data = DashboardProfileData.fromJson(json['data']);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = new Map<String, dynamic>();
-
-    result['name'] = name;
-    result['data'] = data.toJson();
-
-    return result;
-  }
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'data': data.toJson(),
+      };
 
   @override
   bool operator ==(other) {

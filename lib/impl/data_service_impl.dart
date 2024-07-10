@@ -1,54 +1,77 @@
 part of sam_impl;
 
 class DataServiceImpl extends DataService {
-  static const String BROKER = 'iot.samelement.com';
-  static const String BROKER_SSL = 'ssl';
-  static const int BROKER_PORT = 8883;
-  final Dio _dio;
+  static const String TAG = "DataServiceImpl";
+  final Dio dio;
+  final BaseLogger logger;
+  final BrokerProperties broker;
 
-  DataServiceImpl({required Dio dio}) : this._dio = dio;
+  DataServiceImpl(
+      {required this.dio, required this.logger, required this.broker});
 
   @override
   Future<bool> deleteDashboard(String profileId) async {
     try {
-      return await _dio
+      return await dio
           .delete('${ApiEndpoints.DASHBOARDS}/$profileId')
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to delete dashboard profile';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to delete dashboard profile',
+          meta: {'profileId': profileId, 'method': 'deleteDashboard'});
     }
   }
 
   @override
   Future<DashboardProfiles> getAllDashboards() async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.DASHBOARDS,
-              queryParameters: {'limit': 1000},
+              queryParameters: {'limit': 1000000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) {
         try {
           return DashboardProfiles.fromJson(value.data);
-        } catch (e) {}
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getAllDashboards'});
+        }
 
         return DashboardProfiles(list: []);
       });
-    } on DioError catch (_) {
-      throw 'Failed to get all dashboards';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get all dashboards',
+          meta: {'method': 'getAllDashboards'});
     }
   }
 
   @override
   Future<DashboardProfiles> getDashboardsById(String id) async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.DASHBOARDS}/$id',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => DashboardProfiles.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get dashboard by id $id';
+          .then((value) {
+        try {
+          return DashboardProfiles.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getDashboardsById'});
+        }
+
+        return DashboardProfiles(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get dashboard by id $id',
+          meta: {'id': id, 'method': 'getDashboardsById'});
     }
   }
 
@@ -57,80 +80,119 @@ class DataServiceImpl extends DataService {
     try {
       final String body = json.encode({
         'name': name,
-        'data': {'items': [] }
+        'data': {'items': []}
       });
-      return await _dio
+      return await dio
           .post(ApiEndpoints.DASHBOARDS, data: body)
           .then((value) => DashboardProfile.fromJson(value.data['body']));
-    } on DioError catch (_) {
-      throw 'Failed to create dashboard profile';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to create dashboard profile',
+          meta: {'name': name, 'method': 'postEmptyDashboardProfile'});
     }
   }
 
   @override
   Future<bool> putDashboard(DashboardProfile newProfile) async {
     try {
-      return await _dio
+      return await dio
           .put('${ApiEndpoints.DASHBOARDS}/${newProfile.id}',
               data: json.encode(newProfile))
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to update dashboard profile';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to update dashboard profile',
+          meta: {'profileId': newProfile.id, 'method': 'putDashboard'});
     }
   }
 
   @override
   Future<Cities> getCitiesByKeyword(String keyword) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.CITIES,
               queryParameters: {'search': keyword},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Cities.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get cities';
+          .then((value) {
+        try {
+          return Cities.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getCitiesByKeyword'});
+        }
+
+        return Cities(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get cities',
+          meta: {'keyword': keyword, 'method': 'getCitiesByKeyword'});
     }
   }
 
   @override
   Future<Countries> getCountriesByCode(String code) async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.COUNTRIES}/$code',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Countries.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get countries';
+          .then((value) {
+        try {
+          return Countries.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getCountriesByCode'});
+        }
+
+        return Countries(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get countries',
+          meta: {'code': code, 'method': 'getCountriesByCode'});
     }
   }
 
   @override
   Future<UserAvatar> getAvatar() async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.USER_AVATAR)
           .then((value) => UserAvatar.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get user avatar';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get user avatar',
+          meta: {'method': 'getAvatar'});
     }
   }
 
   @override
   Future<BrokerProperties> getBrokerProperties() async {
-    return await Future.value(BrokerProperties(
-        address: BROKER, protocol: BROKER_SSL, port: BROKER_PORT));
+    return await Future.value(broker);
   }
 
   @override
   Future<UserAccount> getUserAccount() async {
     try {
-      return await _dio.get(ApiEndpoints.USER, queryParameters: {
+      return await dio.get(ApiEndpoints.USER, queryParameters: {
         'profile': 2
       }).then((value) => UserAccount.fromJson(value.data['body']));
-    } on DioError catch (_) {
-      throw 'Failed to get user account';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get user account',
+          meta: {'method': 'getUserAccount'});
     }
   }
 
@@ -144,11 +206,15 @@ class DataServiceImpl extends DataService {
         ),
       });
 
-      return await _dio
+      return await dio
           .post(ApiEndpoints.USER_AVATAR, data: formData)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to upload user avatar';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to upload user avatar',
+          meta: {'meta': 'postUploadAvatar'});
     }
   }
 
@@ -168,12 +234,16 @@ class DataServiceImpl extends DataService {
         'org_phone': '${organization.orgPhone}'
       });
 
-      return await _dio
+      return await dio
           .put('${ApiEndpoints.USER}/${organization.userId}',
               queryParameters: {'profile': 1}, data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to update user organization';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to update user organization',
+          meta: {'method': 'putUserOrganization'});
     }
   }
 
@@ -187,23 +257,37 @@ class DataServiceImpl extends DataService {
         'user_email': '${profile.userEmail}'
       });
 
-      return await _dio
+      return await dio
           .put('${ApiEndpoints.USER}/${profile.userId}',
               queryParameters: {'profile': 0}, data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to update user profile';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to update user profile',
+          meta: {
+            'user_fname': '${profile.userFname}',
+            'user_lname': '${profile.userLname}',
+            'user_phone': '${profile.userPhone}',
+            'user_email': '${profile.userEmail}',
+            'method': 'putUserProfile'
+          });
     }
   }
 
   @override
   Future<bool> deleteDevice(String deviceId) async {
     try {
-      return await _dio
+      return await dio
           .delete('${ApiEndpoints.DEVICES}/$deviceId')
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to delete device';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to delete device',
+          meta: {'id': deviceId, 'method': 'deleteDevice'});
     }
   }
 
@@ -211,67 +295,123 @@ class DataServiceImpl extends DataService {
   Future<bool> deleteUnlinkDeviceFromUser(
       String deviceId, String userId) async {
     try {
-      return await _dio.delete(
+      return await dio.delete(
         '${ApiEndpoints.DEVICES_SHARED}/$deviceId',
         queryParameters: {'user_id': userId},
       ).then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to delete unlinked device from user';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to delete unlinked device from user',
+          meta: {
+            'device': deviceId,
+            'user': userId,
+            'method': 'deleteUnlinkDeviceFromUser'
+          });
     }
   }
 
   @override
   Future<Devices> getAllDevices() async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.DEVICES,
-              queryParameters: {'limit': 1000},
+              queryParameters: {'limit': 1000000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Devices.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get all devices';
+          .then((value) {
+        try {
+          return Devices.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getAllDevices'});
+        }
+
+        return Devices(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get all devices',
+          meta: {'method': 'getAllDevices'});
     }
   }
 
   @override
   Future<Devices> getDeviceById(String id) async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.DEVICES}/$id',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Devices.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get a device by id';
+          .then((value) {
+        try {
+          return Devices.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getDeviceById'});
+        }
+
+        return Devices(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get a device by id',
+          meta: {'id': id, 'method': 'getDeviceById'});
     }
   }
 
   @override
   Future<Devices> getDeviceBySN(String sn) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.DEVICES,
               queryParameters: {'sn': sn, 'unclaim': 1},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Devices.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get a device by serial number';
+          .then((value) {
+        try {
+          return Devices.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getDeviceBySN'});
+        }
+
+        return Devices(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get a device by serial number',
+          meta: {'sn': sn, 'method': 'getDeviceBySN'});
     }
   }
 
   @override
   Future<Devices> getDeviceByVcodeId(String vcode, String id) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.DEVICES,
               queryParameters: {'vcode': vcode, 'device_id': id},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Devices.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get a device by verification code id';
+          .then((value) {
+        try {
+          return Devices.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getDeviceByVcodeId'});
+        }
+
+        return Devices(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get a device by verification code id',
+          meta: {'device': id, 'vcode': vcode, 'method': 'getDeviceByVcodeId'});
     }
   }
 
@@ -279,7 +419,7 @@ class DataServiceImpl extends DataService {
   Future<Devices> getDevices(
       {int limit = 0, int offset = 0, String keyword = ''}) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.DEVICES,
               queryParameters: {
                 'limit': limit,
@@ -288,37 +428,74 @@ class DataServiceImpl extends DataService {
               },
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Devices.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get devices';
+          .then((value) {
+        try {
+          return Devices.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getDevices'});
+        }
+
+        return Devices(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get devices',
+          meta: {'method': 'getDevices'});
     }
   }
 
   @override
   Future<SharedDevices> getSharedDevices() async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.SHARE}/0',
               queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => SharedDevices.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to all shared devices';
+          .then((value) {
+        try {
+          return SharedDevices.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getSharedDevices'});
+        }
+
+        return SharedDevices(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to all shared devices',
+          meta: {'method': 'getSharedDevices'});
     }
   }
 
   @override
   Future<SharedUsers> getSharedUserByDeviceId(String deviceId) async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.DEVICES_SHARED}/$deviceId',
               queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => SharedUsers.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to all shared users';
+          .then((value) {
+        try {
+          return SharedUsers.fromJson(value.data);
+        } catch (e) {
+          logger
+              .error(TAG, e.toString(), {'method': 'getSharedUserByDeviceId'});
+        }
+
+        return SharedUsers(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to all shared users',
+          meta: {'device': deviceId, 'method': 'getSharedUserByDeviceId'});
     }
   }
 
@@ -326,12 +503,19 @@ class DataServiceImpl extends DataService {
   Future<bool> postAcceptSharedDevice(String deviceId, String vcode) async {
     try {
       final String body = json.encode({'device_id': deviceId, 'vcode': vcode});
-      return await _dio
+      return await dio
           .post('${ApiEndpoints.SHARE}/2', data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw getThrowsMessage(
-          'Failed to accept this shared device', _.response!.data);
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to accept this shared device',
+          meta: {
+            'device': deviceId,
+            'vcode': vcode,
+            'method': 'postAcceptSharedDevice'
+          });
     }
   }
 
@@ -339,12 +523,19 @@ class DataServiceImpl extends DataService {
   Future<bool> postIgnoreSharedDevice(String deviceId, String vcode) async {
     try {
       final String body = json.encode({'device_id': deviceId, 'vcode': vcode});
-      return await _dio
+      return await dio
           .post('${ApiEndpoints.SHARE}/3', data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw getThrowsMessage(
-          'Failed to discard this shared device', _.response!.data);
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to discard this shared device',
+          meta: {
+            'device': deviceId,
+            'vcode': vcode,
+            'method': 'postIgnoreSharedDevice'
+          });
     }
   }
 
@@ -356,11 +547,19 @@ class DataServiceImpl extends DataService {
         'device_id': deviceId,
         'email': (destinationEmail != null) ? destinationEmail : ''
       });
-      return await _dio
+      return await dio
           .post('${ApiEndpoints.SHARE}/0', data: body)
           .then((value) => value.data['vcode']);
-    } on DioError catch (_) {
-      throw 'Failed to share this device via email';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to share this device via email',
+          meta: {
+            'device': deviceId,
+            'email': (destinationEmail != null) ? destinationEmail : '',
+            'method': 'postShareDeviceViaEmail'
+          });
     }
   }
 
@@ -379,11 +578,15 @@ class DataServiceImpl extends DataService {
         'status': '${param.status}',
         'unclaim': '0'
       });
-      return await _dio
+      return await dio
           .put('${ApiEndpoints.DEVICES}/${param.id}', data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to claim this device';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to claim this device',
+          meta: {'sn': param.sn, 'method': 'putClaimDevice'});
     }
   }
 
@@ -402,33 +605,48 @@ class DataServiceImpl extends DataService {
         'status': '${param.status}',
         'options': options
       });
-      return await _dio
+      return await dio
           .put('${ApiEndpoints.DEVICES}/${param.id}', data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to update this device properties';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to update this device properties',
+          meta: {'sn': param.sn, 'method': 'putDevice'});
     }
   }
 
   @override
   Future<bool> deleteAnalytic(String analyticId) async {
     try {
-      return await _dio
+      return await dio
           .delete('${ApiEndpoints.ANALYTICS}/$analyticId')
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to delete this widget resources';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to delete this widget resources',
+          meta: {'widget': analyticId, 'method': 'deleteAnalytic'});
     }
   }
 
   @override
   Future<bool> deleteAnalyticsResourcesByAnalytic(String analyticId) async {
     try {
-      return await _dio
+      return await dio
           .delete('${ApiEndpoints.ANALYTICS_RESOURCES}/$analyticId')
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to delete this widget resources';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to delete this widget resources',
+          meta: {
+            'widget': analyticId,
+            'method': 'deleteAnalyticsResourcesByAnalytic'
+          });
     }
   }
 
@@ -436,39 +654,75 @@ class DataServiceImpl extends DataService {
   Future<bool> deleteUnlinkAnalyticFromUser(
       String analyticId, String userId) async {
     try {
-      return await _dio.delete(
+      return await dio.delete(
         '${ApiEndpoints.ANALYTICS_SHARED}/$analyticId',
         queryParameters: {'user_id': userId},
       ).then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to unlink this user from the widget';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to unlink this user from the widget',
+          meta: {
+            'widget': analyticId,
+            'user': userId,
+            'method': 'deleteUnlinkAnalyticFromUser'
+          });
     }
   }
 
   @override
   Future<Analytics> getAnalyticById(String id) async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.ANALYTICS}/$id',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Analytics.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get widget by id';
+          .then((value) {
+        try {
+          return Analytics.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getAnalyticById'});
+        }
+
+        return Analytics(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get widget by id',
+          meta: {'widget': id, 'method': 'getAnalyticById'});
     }
   }
 
   @override
   Future<Analytics> getAnalyticByVcodeId(String vcode, String id) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.ANALYTICS,
               queryParameters: {'vcode': vcode, 'analytic_id': id},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Analytics.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get widget by vcode id';
+          .then((value) {
+        try {
+          return Analytics.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getAnalyticByVcodeId'});
+        }
+
+        return Analytics(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get widget by vcode id',
+          meta: {
+            'widget': id,
+            'vcode': vcode,
+            'method': 'getAnalyticByVcodeId'
+          });
     }
   }
 
@@ -476,7 +730,7 @@ class DataServiceImpl extends DataService {
   Future<Analytics> getAnalytics(
       {int limit = 0, int offset = 0, String keyword = ''}) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.ANALYTICS,
               queryParameters: {
                 'limit': limit,
@@ -485,22 +739,46 @@ class DataServiceImpl extends DataService {
               },
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Analytics.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get widgets with that keyword';
+          .then((value) {
+        try {
+          return Analytics.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getAnalytics'});
+        }
+
+        return Analytics(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: 'Failed to get widgets with that keyword',
+          meta: {'method': 'getAnalytics'});
     }
   }
 
   @override
   Future<AnalyticsResources> getAnalyticsResources(String analyticId) async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.ANALYTICS_RESOURCES}/$analyticId',
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => AnalyticsResources.fromJson(value.data));
-    } on DioError catch (_) {
-      throw "Failed to get this widget's resources";
+          .then((value) {
+        try {
+          return AnalyticsResources.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getAnalyticsResources'});
+        }
+
+        return AnalyticsResources(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to get this widget's resources",
+          meta: {'widget': analyticId, 'method': 'getAnalyticsResources'});
     }
   }
 
@@ -508,20 +786,24 @@ class DataServiceImpl extends DataService {
   Future<DevicesLogs> getDevicesLogs(DevicesLogsParam param,
       {DateTime? timeStart}) async {
     try {
-      DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-      if (timeStart == null) {
-        timeStart = DateTime.now().subtract(Duration(days: 30)).toUtc();
+      // if (timeStart == null) {
+      //   timeStart = DateTime.now().subtract(Duration(days: 30)).toUtc();
+      // }
+
+      Map<String, dynamic> queryParameters = {
+        'parameter': param.deviceParameter,
+        'communication': 'mqtt',
+        'limit': param.limit,
+        'sortorder': 'desc'
+      };
+
+      if (timeStart != null) {
+        queryParameters['ts'] = timeStart.toIso8601String();
       }
 
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.DEVICES_LOGS}/${param.deviceId}',
-              queryParameters: {
-                'parameter': param.deviceParameter,
-                'communication': 'mqtt',
-                'limit': 1000000000,
-                'ts': formatter.format(timeStart).substring(0, 19),
-                'sortorder': 'desc'
-              },
+              queryParameters: queryParameters,
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
           .then((value) {
@@ -538,73 +820,133 @@ class DataServiceImpl extends DataService {
         }
         return DevicesLogs(list: <SensorData>[]);
       });
-    } on DioError catch (_) {
-      throw 'Failed to get this device logs';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to get this device logs",
+          meta: {
+            'id': param.deviceId,
+            'param': param.deviceParameter,
+            'method': 'getDevicesLogs'
+          });
     }
   }
 
   @override
   Future<Analytics> getMyAnalytics() async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.ANALYTICS,
-              queryParameters: {'limit': 1000},
+              queryParameters: {'limit': 1000000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => Analytics.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get all widgets';
+          .then((value) {
+        try {
+          return Analytics.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getMyAnalytics'});
+        }
+
+        return Analytics(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to get all widgets",
+          meta: {'method': 'getMyAnalytics'});
     }
   }
 
   @override
   Future<SharedAnalytics> getSharedAnalytics() async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.SHARE}/1',
               queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => SharedAnalytics.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get all shared widgets';
+          .then((value) {
+        try {
+          return SharedAnalytics.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getSharedAnalytics'});
+        }
+
+        return SharedAnalytics(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to get all shared widgets",
+          meta: {'method': 'getSharedAnalytics'});
     }
   }
 
   @override
   Future<SharedUsers> getSharedUserByAnalyticId(String analyticId) async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.ANALYTICS_SHARED}/$analyticId',
               queryParameters: {'limit': 1000},
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => SharedUsers.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get shared users';
+          .then((value) {
+        try {
+          return SharedUsers.fromJson(value.data);
+        } catch (e) {
+          logger.error(
+              TAG, e.toString(), {'method': 'getSharedUserByAnalyticId'});
+        }
+
+        return SharedUsers(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to get shared users",
+          meta: {'widget': analyticId, 'method': 'getSharedUserByAnalyticId'});
     }
   }
 
   @override
   Future<StyledDevicesLogs> getStyledDevicesLogs(
-      DevicesLogsParam param, LogsStyle style, int timeframeMinutes,
-      {int? limit}) async {
+      DevicesLogsParam param, LogsStyle style, int timeframeMinutes) async {
     try {
-      return await _dio
+      return await dio
           .get('${ApiEndpoints.DEVICES_LOGS}/${param.deviceId}',
               queryParameters: {
                 'parameter': param.deviceParameter,
                 'communication': 'mqtt',
-                'limit': limit,
+                'limit': param.limit,
                 'sortorder': 'desc',
                 'style': style.name,
                 'tf': timeframeMinutes
               },
               options: Options(
                   validateStatus: (status) => status == 200 || status == 404))
-          .then((value) => StyledDevicesLogs.fromJson(value.data));
-    } on DioError catch (_) {
-      throw 'Failed to get devices logs';
+          .then((value) {
+        try {
+          return StyledDevicesLogs.fromJson(value.data);
+        } catch (e) {
+          logger.error(TAG, e.toString(), {'method': 'getStyledDevicesLogs'});
+        }
+
+        return StyledDevicesLogs(list: []);
+      });
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to get devices logs",
+          meta: {
+            'id': param.deviceId,
+            'param': param.deviceParameter,
+            'method': 'getStyledDevicesLogs'
+          });
     }
   }
 
@@ -614,11 +956,19 @@ class DataServiceImpl extends DataService {
       final String body =
           json.encode({'analytic_id': analyticId, 'vcode': vcode});
 
-      return await _dio
+      return await dio
           .post('${ApiEndpoints.SHARE}/2', data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw getThrowsMessage('Failed to accept this widget', _.response!.data);
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to accept this widget",
+          meta: {
+            'widget': analyticId,
+            'vcode': vcode,
+            'method': 'postAcceptSharedAnalytic'
+          });
     }
   }
 
@@ -629,11 +979,18 @@ class DataServiceImpl extends DataService {
         'analytic_id': analyticResource.analyticId,
         'resources': analyticResource.resources
       });
-      return await _dio
+      return await dio
           .post('${ApiEndpoints.ANALYTICS_RESOURCES}', data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to update this widget resources';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to update this widget resources",
+          meta: {
+            'widget': analyticResource.analyticId,
+            'method': 'postAnalyticsResources'
+          });
     }
   }
 
@@ -642,12 +999,19 @@ class DataServiceImpl extends DataService {
     try {
       final String body =
           json.encode({'analytic_id': analyticId, 'vcode': vcode});
-      return await _dio
+      return await dio
           .post('${ApiEndpoints.SHARE}/3', data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw getThrowsMessage(
-          'Failed to discard this shared widget', _.response!.data);
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to discard this shared widget",
+          meta: {
+            'widget': analyticId,
+            'vcode': vcode,
+            'method': 'postIgnoreSharedAnalytic'
+          });
     }
   }
 
@@ -656,11 +1020,15 @@ class DataServiceImpl extends DataService {
     try {
       final String body = json.encode(param.toJson());
 
-      return await _dio
+      return await dio
           .post(ApiEndpoints.ANALYTICS, data: body)
           .then((value) => AnalyticWidget.fromJson(value.data['body']));
-    } on DioError catch (_) {
-      throw 'Failed to create a new widget';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to create a new widget",
+          meta: {'method': 'postNewAnalytic'});
     }
   }
 
@@ -672,37 +1040,39 @@ class DataServiceImpl extends DataService {
         'analytic_id': analyticId,
         'email': (destinationEmail != null) ? destinationEmail : ''
       });
-      return await _dio
+      return await dio
           .post('${ApiEndpoints.SHARE}/1', data: body)
           .then((value) => value.data['vcode']);
-    } on DioError catch (_) {
-      throw 'Failed to share this widget';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to share this widget",
+          meta: {
+            'widget': analyticId,
+            'email': (destinationEmail != null) ? destinationEmail : '',
+            'method': 'postShareAnalytic'
+          });
     }
   }
 
   @override
   Future<bool> putAnalytic(String analyticId, AnalyticWidgetParam param) async {
     try {
-      final String body = json.encode(
-          {'title': param.title, 'model': param.model, 'options': param.options});
-      return await _dio
+      final String body = json.encode({
+        'title': param.title,
+        'model': param.model,
+        'options': param.options
+      });
+      return await dio
           .put('${ApiEndpoints.ANALYTICS}/$analyticId', data: body)
           .then((value) => true);
-    } on DioError catch (_) {
-      throw 'Failed to update this widget';
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to update this widget",
+          meta: {'widget': analyticId, 'method': 'putAnalytic'});
     }
-  }
-
-  @override
-  String getThrowsMessage(
-      String defaultError, Map<String, dynamic>? responseData) {
-    if (responseData != null) {
-      try {
-        ApiError apiError = ApiError.fromJson(responseData);
-        return apiError.desc;
-      } catch (e) {}
-    }
-
-    return defaultError;
   }
 }

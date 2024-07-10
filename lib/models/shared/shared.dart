@@ -3,6 +3,7 @@ library sam_models_shared;
 import 'package:sam_api_calls/models/user/user.dart';
 import 'package:sam_api_calls/models/device/device.dart';
 import 'package:sam_api_calls/models/analytic/analytic.dart';
+import 'package:sam_api_calls/util/util.dart';
 
 part 'shared_analytic.dart';
 part 'shared_analytics.dart';

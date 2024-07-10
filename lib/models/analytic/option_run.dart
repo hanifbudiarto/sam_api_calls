@@ -1,28 +1,26 @@
 import 'package:sam_api_calls/models/analytic/option_alarm_config.dart';
+import 'package:sam_api_calls/util/util.dart';
 
 class OptionRun {
-  late String condition;
-  late int delay;
-  late OptionAlarmConfig? alarm;
+  final String condition;
+  final int delay;
+  final OptionAlarmConfig alarm;
 
-  OptionRun(
-      {required this.condition, required this.delay, required this.alarm});
+  const OptionRun(
+      {this.condition = "", this.delay = 0, this.alarm = const OptionAlarmConfig()});
 
-  OptionRun.fromJson(Map<String, dynamic> json) {
-    condition = json['condition'];
-    delay = json['delay'];
-    alarm = json['alarm'] != null
-        ? new OptionAlarmConfig.fromJson(json['alarm'])
-        : null;
-  }
+  OptionRun.fromJson(Map<String, dynamic> json)
+      : condition = ifNullReturnEmpty(json['condition']),
+        delay = json['delay'],
+        alarm = json['alarm'].runtimeType != Null ||
+                json['alarm'] != null ||
+                json['alarm'].toString() != 'null'
+            ? new OptionAlarmConfig.fromJson(json['alarm'])
+            : new OptionAlarmConfig();
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['condition'] = this.condition;
-    data['delay'] = this.delay;
-    if (this.alarm != null) {
-      data['alarm'] = this.alarm!.toJson();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'condition': this.condition,
+        'delay': this.delay,
+        'alarm': this.alarm.toJson(),
+      };
 }

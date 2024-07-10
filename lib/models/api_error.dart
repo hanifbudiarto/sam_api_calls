@@ -1,10 +1,10 @@
 part of sam_models;
 
 class ApiError {
-  late final String type;
-  late final String title;
-  late final String desc;
-  late final String request;
+  final String type;
+  final String title;
+  final String desc;
+  final String request;
 
   ApiError(
       {required this.type,
@@ -12,10 +12,9 @@ class ApiError {
       required this.desc,
       required this.request});
 
-  ApiError.fromJson(Map<String, dynamic> json) {
-    this.type = json['type'];
-    this.title = json['title'];
-    this.desc = json['desc'];
-    this.request = json['request'];
-  }
+  ApiError.fromJson(Map<String, dynamic> json)
+      : this.type = ifNullReturnEmpty(json['type']),
+        this.title = ifNullReturnEmpty(json['title']),
+        this.desc = ifNullReturnEmpty(json['desc']),
+        this.request = ifNullReturnEmpty(json['request']);
 }

@@ -1,63 +1,52 @@
 part of sam_models_dashboards;
 
 class DashboardItem {
-  late int position;
-  late int width; // default width on initial state is min_width
-  late int height; // default height on initial state is min_height
+  final int position;
+  final int width; // default width on initial state is min_width
+  final int height; // default height on initial state is min_height
 
-  late String analyticId;
-  late AnalyticWidget? analytic;
+  final String analyticId;
 
-  late IotWidget? iotWidget;
+  final IotWidget? iotWidget;
 
-  late List<ElementResources> elementResources;
+  final List<ElementResources> elementResources;
 
-  DashboardItem(
-      {required this.position,
-      required this.analyticId,
-      required this.elementResources,
-      required this.iotWidget,
-      this.width = 0,
-      this.height = 0,
-      required this.analytic});
+  AnalyticWidget? analytic;
 
-  DashboardItem.fromJson(Map<String, dynamic> json) {
-    List<ElementResources> list = [];
-    var res = json['element_resources'] as List;
-    list = res.map((r) => ElementResources.fromJson(r)).toList();
+  DashboardItem({
+    required this.position,
+    required this.analyticId,
+    required this.iotWidget,
+    required this.analytic,
+    this.elementResources = const <ElementResources>[],
+    this.width = 0,
+    this.height = 0,
+  });
 
-    this.position = json['position'];
-    this.width = json['width'];
-    this.height = json['height'];
+  DashboardItem.fromJson(Map<String, dynamic> json)
+      : this.position = json['position'],
+        this.width = json['width'],
+        this.height = json['height'],
+        this.iotWidget = json['widget_id'] == 'widget-flow'
+            ? null
+            : SamIotWidgets.instance.collection
+                .singleWhereOrNull((wgt) => wgt.id == json['widget_id']),
+        this.analyticId = ifNullReturnEmpty(json['analytic_id']),
+        this.elementResources = (json['element_resources'] as List)
+            .map((r) => ElementResources.fromJson(r))
+            .toList();
 
-    if (json['widget_id'] == 'widget-flow') {
-      this.iotWidget = null;
-    } else {
-      this.iotWidget = SamIotWidgets.instance.collection
-          .singleWhereOrNull((wgt) => wgt.id == json['widget_id']);
-    }
-
-    this.analyticId = json['analytic_id'];
-    this.elementResources = list;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = new Map<String, dynamic>();
-
-    result['position'] = position;
-    result['width'] = width;
-    result['height'] = height;
-    if (analytic!.model == 'widget-flow') {
-      result['widget_id'] = 'widget-flow';
-    } else {
-      result['widget_id'] = iotWidget!.id;
-    }
-    result['analytic_id'] = analytic!.id;
-    result['element_resources'] = this
-        .elementResources
-        .map((ElementResources elemenRes) => elemenRes.toJson())
-        .toList();
-
-    return result;
-  }
+  Map<String, dynamic> toJson() => {
+        'position': position,
+        'width': width,
+        'height': height,
+        'widget_id': analytic != null && analytic!.model == 'widget-flow'
+            ? 'widget-flow'
+            : iotWidget!.id,
+        'analytic_id': analyticId,
+        'element_resources': this
+            .elementResources
+            .map((ElementResources elemenRes) => elemenRes.toJson())
+            .toList()
+      };
 }

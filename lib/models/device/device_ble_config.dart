@@ -1,22 +1,24 @@
 import 'package:sam_api_calls/models/device/device_ble.dart';
 
 class DeviceBleConfig {
-  late List<DeviceBle> bleDevices;
+  final List<DeviceBle> bleDevices;
 
-  DeviceBleConfig(this.bleDevices);
+  const DeviceBleConfig({this.bleDevices = const <DeviceBle>[]});
 
-  DeviceBleConfig.fromJson(Map<String, dynamic> json) {
-    bleDevices = [];
-    if (json['devices'].toString() != 'null') {
+  DeviceBleConfig.fromJson(Map<String, dynamic> json)
+      : bleDevices = getBleDevices(json);
+
+  static List<DeviceBle> getBleDevices(Map<String, dynamic> json) {
+    List<DeviceBle> bleDevices = [];
+    if (json['devices'].runtimeType != Null ||
+        json['devices'].toString() != 'null') {
       json['devices'].forEach((v) {
         bleDevices.add(DeviceBle.fromJson(v));
       });
     }
+
+    return bleDevices;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['devices'] = bleDevices;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {'devices': this.bleDevices.map((v) => v.toJson()).toList()};
 }

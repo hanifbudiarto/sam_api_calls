@@ -1,24 +1,14 @@
 part of sam_models_devices;
 
 class WgtElements {
-  late final String id;
-  late final List<String> resources;
+  final String id;
+  final List<String> resources;
 
-  WgtElements({required this.id, required this.resources});
+  WgtElements({required this.id, this.resources = const <String>[]});
 
-  WgtElements.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  WgtElements.fromJson(Map<String, dynamic> json)
+      : id = json['id'].toString(),
+        this.resources = List<String>.from(json['resources']);
 
-    List<String> res = [];
-    res = List<String>.from(json['resources']);
-
-    this.resources = res;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['resources'] = this.resources;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {'id': this.id, 'resources': this.resources};
 }

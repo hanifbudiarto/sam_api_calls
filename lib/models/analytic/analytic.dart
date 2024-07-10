@@ -1,7 +1,9 @@
 library sam_models_analytics;
 
 import 'package:sam_api_calls/models/analytic/option_run.dart';
+import 'package:sam_api_calls/models/analytic/rounding_settings.dart';
 import 'package:sam_api_calls/models/device/device.dart';
+import 'package:sam_api_calls/util/util.dart';
 
 part 'analytic_resource.dart';
 part 'analytic_widget.dart';

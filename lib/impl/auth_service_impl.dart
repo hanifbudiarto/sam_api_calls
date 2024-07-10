@@ -1,84 +1,96 @@
 part of sam_impl;
 
 class AuthServiceImpl extends AuthService {
-  late Dio _dio;
-  late LocalService _storage;
-  AuthToken? _userToken, _appToken, _deviceToken;
+  static const String TAG = "AuthServiceImpl";
+  final Dio dio;
+  final BaseLogger logger;
+  final LocalService storage;
+  AuthToken userToken = AuthToken(accessToken: '', refreshToken: '');
+  AuthToken appToken = AuthToken(accessToken: '', refreshToken: '');
+  AuthToken deviceToken = AuthToken(accessToken: '', refreshToken: '');
 
-  AuthServiceImpl(
-      {required Dio dio, required LocalService storage, List<Interceptor>? interceptors}) {
-    this._dio = dio;
-
-    if (interceptors != null && interceptors.length > 0) {
-      _dio.interceptors.addAll(interceptors);
-    }
-
-    this._storage = storage;
-  }
+  AuthServiceImpl({
+    required Dio dio,
+    required this.storage,
+    required this.logger,
+    List<Interceptor> interceptors = const <Interceptor>[],
+  }) : this.dio = dio..interceptors.addAll(interceptors);
 
   @override
   Future<AuthToken> generateAppToken(String key, String password) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.AUTH,
               options: Options(headers: {
                 HttpHeaders.authorizationHeader:
                     ApiHelper.buildEncodedBasicAuth(key, password)
               }))
           .then((value) => AuthToken.fromConcatenatedString(value.data));
-    } on DioError catch (e) {
-      throw e.toString();
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to authenticate app");
     }
   }
 
   @override
   Future<AuthToken> generateDeviceToken(String key, String password) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.AUTH,
               options: Options(headers: {
                 HttpHeaders.authorizationHeader:
                     ApiHelper.buildEncodedBasicAuth(key, password)
               }))
           .then((value) => AuthToken.fromConcatenatedString(value.data));
-    } on DioError catch (_) {
-      throw "Failed to authenticate device";
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to authenticate device");
     }
   }
 
   @override
   Future<AuthToken> refreshAppToken(String appRefreshToken) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.AUTH,
               options:
                   Options(headers: {ApiHelper.HEADER_API_KEY: appRefreshToken}))
           .then((value) => AuthToken(
               accessToken: value.data, refreshToken: appRefreshToken));
-    } on DioError catch (_) {
-      throw "Failed to refresh application token";
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to refresh app");
     }
   }
 
   @override
   Future<AuthToken> refreshDeviceToken(String deviceRefreshToken) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.AUTH,
               options: Options(
                   headers: {ApiHelper.HEADER_API_KEY: deviceRefreshToken}))
           .then((value) => AuthToken(
               accessToken: value.data, refreshToken: deviceRefreshToken));
-    } on DioError catch (_) {
-      throw "Failed to refresh device token";
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to refresh device");
     }
   }
 
   @override
   Future<AuthToken> refreshUserToken(
-      String userRefreshToken, String? appAccessToken) async {
+      String userRefreshToken, String appAccessToken) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.AUTH,
               options: Options(headers: {
                 HttpHeaders.authorizationHeader:
@@ -87,8 +99,11 @@ class AuthServiceImpl extends AuthService {
               }))
           .then((value) => AuthToken(
               accessToken: value.data, refreshToken: userRefreshToken));
-    } on DioError catch (_) {
-      throw "Failed to refresh user token";
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to refresh user token");
     }
   }
 
@@ -96,7 +111,7 @@ class AuthServiceImpl extends AuthService {
   Future<AuthToken> generateUserToken(
       String username, String password, String appAccessToken) async {
     try {
-      return await _dio
+      return await dio
           .get(ApiEndpoints.AUTH,
               options: Options(headers: {
                 HttpHeaders.authorizationHeader:
@@ -104,8 +119,11 @@ class AuthServiceImpl extends AuthService {
                 ApiHelper.HEADER_API_KEY: appAccessToken
               }))
           .then((value) => AuthToken.fromConcatenatedString(value.data));
-    } on DioError catch (_) {
-      throw "Failed to authenticate user";
+    } on Exception catch (e) {
+      throw HttpHelper.decodeErrorResponse(e,
+          tag: TAG,
+          logger: logger,
+          defaultErrorMessage: "Failed to authenticate user");
     }
   }
 
@@ -116,66 +134,70 @@ class AuthServiceImpl extends AuthService {
       AuthToken? deviceToken}) async {
     try {
       if (userToken != null) {
-        this._userToken = userToken;
+        this.userToken = AuthToken(
+            accessToken: userToken.accessToken,
+            refreshToken: userToken.refreshToken);
         await saveUserRefreshToken(userToken.refreshToken);
       }
 
       if (appToken != null) {
-        this._appToken = appToken;
+        this.appToken = AuthToken(
+            accessToken: appToken.accessToken,
+            refreshToken: appToken.refreshToken);
+        ;
         await saveAppRefreshToken(appToken.refreshToken);
       }
 
       if (deviceToken != null) {
-        this._deviceToken = deviceToken;
+        this.deviceToken = AuthToken(
+            accessToken: deviceToken.accessToken,
+            refreshToken: deviceToken.refreshToken);
+
         await saveDeviceRefreshToken(deviceToken.refreshToken);
       }
       return await Future.value(true);
-    } catch (e) {}
+    } catch (e) {
+      logger.error(TAG, e.toString());
+    }
 
     return await Future.value(false);
   }
 
   @override
-  Future<String?> getCurrentAppAccessToken() async {
-    if (_appToken == null) return null;
-
-    return await Future.value(_appToken!.accessToken);
+  Future<String> getCurrentAppAccessToken() async {
+    return await Future.value(appToken.accessToken);
   }
 
   @override
   Future<String> getSavedAppRefreshToken() async {
     String? token =
-        await _storage.read(key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_APP);
+        await storage.read(key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_APP);
     if (token == null) return "";
     return token;
   }
 
   @override
-  Future<String?> getCurrentUserAccessToken() async {
-    if (_userToken == null) return null;
-
-    return await Future.value(_userToken!.accessToken);
+  Future<String> getCurrentUserAccessToken() async {
+    return await Future.value(userToken.accessToken);
   }
 
   @override
   Future<String> getSavedUserRefreshToken() async {
     String? token =
-        await _storage.read(key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_USER);
+        await storage.read(key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_USER);
     if (token == null) return "";
     return token;
   }
 
   @override
-  Future<String?> getCurrentDeviceAccessToken() async {
-    if (_deviceToken == null) return null;
-
-    return await Future.value(_deviceToken!.accessToken);
+  Future<String> getCurrentDeviceAccessToken() async {
+    return await Future.value(deviceToken.accessToken);
   }
 
   @override
   Future<String> getSavedDeviceRefreshToken() async {
-    String? token = await _storage.read(
-        key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_DEVICE);
+    String? token =
+        await storage.read(key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_DEVICE);
     if (token == null) return "";
     return token;
   }
@@ -193,19 +215,19 @@ class AuthServiceImpl extends AuthService {
 
   @override
   Future<bool> saveAppRefreshToken(String token) async {
-    return await _storage.write(
+    return await storage.write(
         key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_APP, value: token);
   }
 
   @override
   Future<bool> saveDeviceRefreshToken(String token) async {
-    return await _storage.write(
+    return await storage.write(
         key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_DEVICE, value: token);
   }
 
   @override
   Future<bool> saveUserRefreshToken(String token) async {
-    return await _storage.write(
+    return await storage.write(
         key: LocalServiceKeys.ARGUMENT_REFRESH_TOKEN_USER, value: token);
   }
 }

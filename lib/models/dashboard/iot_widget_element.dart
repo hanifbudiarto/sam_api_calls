@@ -1,32 +1,31 @@
 part of sam_models_dashboards;
 
 class IotWidgetElement {
-  late final String id;
-  late final String title;
-  late final String icon;
-  late final bool settable;
-  late final bool retained;
-  late final int numOfParameters;
-  late final List<String> acceptedParameters;
+  final String id;
+  final String title;
+  final String icon;
+  final bool settable;
+  final bool retained;
+  final int numOfParameters;
+  final List<AcceptedParameter> acceptedParameters;
 
   IotWidgetElement(
       {required this.id,
-      required this.title,
-      required this.icon,
-      required this.settable,
-      required this.retained,
-      required this.numOfParameters,
-      required this.acceptedParameters});
+      this.title = "",
+      this.icon = "",
+      this.settable = false,
+      this.retained = false,
+      this.numOfParameters = 0,
+      this.acceptedParameters = const <AcceptedParameter>[]});
 
-  IotWidgetElement.fromJson(Map<String, dynamic> json) {
-    var acceptedParams = json['accepted_parameters'] as List;
-
-    this.id = json['id'];
-    this.title = json['title'];
-    this.icon = json['icon'];
-    this.settable = json['settable'];
-    this.retained = json['retained'];
-    this.numOfParameters = json['num_of_parameters'];
-    this.acceptedParameters = acceptedParams.map((a) => a.toString()).toList();
-  }
+  IotWidgetElement.fromJson(Map<String, dynamic> json)
+      : this.id = json['id'].toString(),
+        this.title = ifNullReturnEmpty(json['title']),
+        this.icon = ifNullReturnEmpty(json['icon']),
+        this.settable = json['settable'] == true,
+        this.retained = json['retained'] == true,
+        this.numOfParameters = json['num_of_parameters'],
+        this.acceptedParameters = (json['accepted_parameters'] as List)
+            .map((a) => AcceptedParameter.fromJson(a))
+            .toList();
 }

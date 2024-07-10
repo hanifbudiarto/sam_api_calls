@@ -9,22 +9,21 @@ class Country {
   "region": "Southeast Asia"
    */
 
-  late final String code;
-  late final String code2;
-  late final String name, continent, region;
+  final String code;
+  final String code2;
+  final String name, continent, region;
 
   Country(
       {required this.code,
-      required this.code2,
-      required this.name,
-      required this.continent,
-      required this.region});
+      this.code2 = "",
+      this.name = "",
+      this.continent = "",
+      this.region = ""});
 
-  Country.fromJson(Map<String, dynamic> json) {
-    this.code = json['code'];
-    this.code2 = json['code2'];
-    this.name = json['name'];
-    this.continent = json['continent'];
-    this.region = json['region'];
-  }
+  Country.fromJson(Map<String, dynamic> json)
+      : this.code = json['code'].toString(),
+        this.code2 = ifNullReturnEmpty(json['code2']),
+        this.name = ifNullReturnEmpty(json['name']),
+        this.continent = ifNullReturnEmpty(json['continent']),
+        this.region = ifNullReturnEmpty(json['region']);
 }

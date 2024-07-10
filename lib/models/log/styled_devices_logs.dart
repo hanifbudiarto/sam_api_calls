@@ -1,20 +1,18 @@
 part of sam_models_logs;
 
 class StyledDevicesLogs {
-  late final List<Ohlc> list;
+  final List<Ohlc> list;
 
-  StyledDevicesLogs({required this.list});
+  StyledDevicesLogs({this.list = const <Ohlc> []});
 
-  StyledDevicesLogs.fromJson(Map<String, dynamic> json) {
+  StyledDevicesLogs.fromJson(Map<String, dynamic> json)
+      : this.list = json.containsKey('body') ? getList(json) : [];
+
+  static List<Ohlc> getList(Map<String, dynamic> json) {
     List<Ohlc> list = [];
+    var collection = json['body'] as List;
+    list = collection.map((c) => Ohlc.fromJson(c)).toList();
 
-    if (json.containsKey('body')) {
-      var collection = json['body'] as List;
-      list = collection
-          .map((c) => Ohlc.fromJson(c))
-          .toList();
-    }
-
-    this.list = list;
+    return list;
   }
 }

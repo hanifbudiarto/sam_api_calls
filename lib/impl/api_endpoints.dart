@@ -1,9 +1,6 @@
 part of sam_impl;
 
 class ApiEndpoints {
-  static const String HOST = 'https://iot.samelement.com';
-  static const String BASE_URL = '$HOST/api/en';
-
   //#region User
   static const String USER = '/user';
   static const String TOKENS = '/tokens';
@@ -35,4 +32,6 @@ class ApiEndpoints {
   //#region Auth
   static const String AUTH = '/auth';
   //#endregion
+
+  static const String WHITE_LABEL = "/whitelabel";
 }

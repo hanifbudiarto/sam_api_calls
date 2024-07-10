@@ -1,16 +1,36 @@
 part of sam_models_logs;
 
 class SensorData {
-  late DateTime datein;
-  late String value;
-  late String additionalValue;
+  DateTime datein;
+  String value;
+  String additionalValue;
 
   SensorData(
-      {required this.datein,
-      required this.value,
-      required this.additionalValue});
+      {required this.datein, this.value = "", this.additionalValue = ""});
 
-  SensorData.fromJson(Map<String, dynamic> json, Property prop) {
+  SensorData.fromJson(Map<String, dynamic> json, Property prop)
+      : this.datein = DateUtil.convertToLocalDate(json['datein'].toString()),
+        this.value = getValue(json, prop),
+        this.additionalValue = getAddValue(json);
+
+  static String getValue(Map<String, dynamic> json, Property prop) {
+    String valueJson = json['value'].toString();
+    if (valueJson.contains('|')) {
+      List<String> valueJsonSplit = valueJson.split('|');
+      if (valueJsonSplit.length > 1) {
+        valueJson = valueJsonSplit[0];
+      }
+    }
+
+    if (prop.datatype.toLowerCase() == 'float' ||
+            prop.datatype.toLowerCase() == 'integer') {
+      valueJson = NumberUtil.removeTrailingZero(num.parse(valueJson));
+    }
+
+    return valueJson;
+  }
+
+  static String getAddValue(Map<String, dynamic> json) {
     String valueJson = json['value'].toString();
     String addValue = '';
     if (valueJson.contains('|')) {
@@ -21,14 +41,6 @@ class SensorData {
       }
     }
 
-    if (prop.datatype != null &&
-        (prop.datatype!.toLowerCase() == 'float' ||
-            prop.datatype!.toLowerCase() == 'integer')) {
-      valueJson = NumberUtil.removeTrailingZero(num.parse(valueJson));
-    }
-
-    this.datein = DateUtil.convertToLocalDate(json['datein'].toString());
-    this.value = valueJson;
-    this.additionalValue = addValue;
+    return addValue;
   }
 }

@@ -11,16 +11,17 @@ class SharedDevices {
   'totalrecords': '3',
   'body': [{}] 
   */
-  late final List<SharedDevice> list;
+  final List<SharedDevice> list;
 
-  SharedDevices({required this.list});
+  SharedDevices({this.list = const <SharedDevice>[]});
 
-  SharedDevices.fromJson(Map<String, dynamic> json) {
+  SharedDevices.fromJson(Map<String, dynamic> json)
+      : this.list = json.containsKey('body') ? getList(json) : [];
+
+  static List<SharedDevice> getList(Map<String, dynamic> json) {
     List<SharedDevice> list = [];
-    if (json.containsKey('body')) {
-      var results = json['body'] as List;
-      list.addAll(results.map((d) => SharedDevice.fromJson(d)).toList());
-    }
-    this.list = list;
+    var results = json['body'] as List;
+    list.addAll(results.map((d) => SharedDevice.fromJson(d)).toList());
+    return list;
   }
 }

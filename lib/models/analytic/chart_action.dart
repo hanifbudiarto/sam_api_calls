@@ -1,12 +1,11 @@
 part of sam_models_analytics;
 
 class ChartAction {
-  late final ChartActionType inputType;
-  List<String>? inputSource;
-  String? enteredValue;
+  final ChartActionType inputType;
+  final List<String> inputSource;
+  final String enteredValue;
 
-  ChartAction(
-      {required this.inputType, this.inputSource, this.enteredValue});
+  const ChartAction({this.inputType = ChartActionType.TEXT, this.inputSource = const <String>[], this.enteredValue = ""});
 
   static ChartActionType getAction(String type) {
     switch (type) {
@@ -44,22 +43,17 @@ class ChartAction {
     }
   }
 
-  ChartAction.fromJson(Map<String, dynamic> json) {
-    List<String> sources = [];
-    if (json.containsKey('input_source') && json['input_source'] != null) {
-      sources = List<String>.from(json['input_source']);
-    }
+  ChartAction.fromJson(Map<String, dynamic> json)
+      : this.inputType = ChartAction.getAction(json['input_type']),
+        this.inputSource =
+            json.containsKey('input_source') && json['input_source'] != null
+                ? List<String>.from(json['input_source'])
+                : [],
+        this.enteredValue = ifNullReturnEmpty(json['entered_value']);
 
-    this.inputType = ChartAction.getAction(json['input_type']);
-    this.inputSource = sources;
-    this.enteredValue = json['entered_value'].toString();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['input_type'] = ChartAction.getActionString(this.inputType);
-    data['entered_value'] = this.enteredValue;
-    data['input_source'] = this.inputSource;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'input_type': ChartAction.getActionString(this.inputType),
+        'entered_value': this.enteredValue,
+        'input_source': this.inputSource
+      };
 }

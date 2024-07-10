@@ -12,21 +12,20 @@ class SharedDevice {
   'share_by': '97'
    */
 
-  late final String id;
-  late final String vcode;
-  late final DeviceIot sharedItem;
-  late final UserAccount sharedFrom;
+  final String id;
+  final String vcode;
+  final DeviceIot sharedItem;
+  final UserAccount sharedFrom;
 
   SharedDevice(
       {required this.id,
-      required this.vcode,
+      this.vcode = "",
       required this.sharedItem,
       required this.sharedFrom});
 
-  SharedDevice.fromJson(Map<String, dynamic> json) {
-    this.id = json['id'];
-    this.vcode = json['vcode'];
-    this.sharedItem = DeviceIot.fromJson(json['share_item']);
-    this.sharedFrom = UserAccount.fromJson(json['share_from']);
-  }
+  SharedDevice.fromJson(Map<String, dynamic> json)
+      : this.id = json['id'].toString(),
+        this.vcode = ifNullReturnEmpty(json['vcode']),
+        this.sharedItem = DeviceIot.fromJson(json['share_item']),
+        this.sharedFrom = UserAccount.fromJson(json['share_from']);
 }

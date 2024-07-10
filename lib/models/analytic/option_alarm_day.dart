@@ -1,18 +1,14 @@
+import 'package:sam_api_calls/util/util.dart';
+
 class OptionAlarmDay {
-  late bool enabled;
-  late String at;
+  final bool enabled;
+  final String at;
 
-  OptionAlarmDay({this.enabled = false, this.at = ""});
+  const OptionAlarmDay({this.enabled = false, this.at = ""});
 
-  OptionAlarmDay.fromJson(Map<String, dynamic> json) {
-    enabled = json['enabled'];
-    at = json['at'];
-  }
+  OptionAlarmDay.fromJson(Map<String, dynamic> json)
+      : enabled = json['enabled'] == true,
+        at = ifNullReturnEmpty(json['at']);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['enabled'] = this.enabled;
-    data['at'] = this.at;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {'enabled': this.enabled, 'at': this.at};
 }

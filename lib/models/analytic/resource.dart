@@ -1,13 +1,14 @@
 part of sam_models_analytics;
 
 class Resource {
-  late final String resourceId;
-  late final String deviceId;
-  late final String deviceParameter;
-  late String aliasParameter;
-  late int operationMode;
-  late num operationValue;
-  OptionResource? optionResource;
+  final String resourceId;
+  final String deviceId;
+  final String deviceParameter;
+  final String aliasParameter;
+  final int operationMode;
+  final num operationValue;
+  final OptionResource optionResource;
+
   DeviceIot? device;
 
   Resource(
@@ -17,27 +18,23 @@ class Resource {
       this.aliasParameter = '',
       this.operationMode = 0,
       this.operationValue = 0.0,
-      this.optionResource,
+      this.optionResource = const OptionResource(),
       this.device});
 
-  Resource.fromJson(Map<String, dynamic> json) {
-    OptionResource? optionResource;
-    try {
-      if (json['options'] != 'null') {
-        optionResource = OptionResource.fromJson(json['options']);
-      }
-    } catch (e) {
-      print('Resource fromJson ${e.toString()}');
-    }
-
-    this.resourceId = json['id'];
-    this.deviceId = json['device_id'];
-    this.deviceParameter = json['parameter'];
-    this.aliasParameter = json['name'] == 'null' ? null : json['name'];
-    this.operationMode = int.parse(json['operation_mode']);
-    this.operationValue = double.parse(json['operation_value']);
-    this.optionResource = optionResource;
-  }
+  Resource.fromJson(Map<String, dynamic> json)
+      : this.resourceId = json['id'].toString(),
+        this.deviceId = json['device_id'].toString(),
+        this.deviceParameter = json['parameter'].toString(),
+        this.aliasParameter = ifNullReturnEmpty(json['name']),
+        this.operationMode =
+            int.parse(ifNullReturnEmpty(json['operation_mode'])),
+        this.operationValue =
+            double.parse(ifNullReturnEmpty(json['operation_value'])),
+        this.optionResource = json['options'].runtimeType != Null ||
+                json['options'] != null ||
+                json['options'].toString() != 'null'
+            ? OptionResource.fromJson(json['options'])
+            : OptionResource();
 
   Map toJson() => {
         'id': this.resourceId,
@@ -46,6 +43,6 @@ class Resource {
         'name': this.aliasParameter,
         'operation_mode': this.operationMode.toString(),
         'operation_value': this.operationValue.toString(),
-        'options': this.optionResource!.toJson()
+        'options': this.optionResource.toJson()
       };
 }

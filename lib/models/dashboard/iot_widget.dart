@@ -1,29 +1,41 @@
 part of sam_models_dashboards;
 
 class IotWidget {
-  late final String id;
-  late final String title;
-  late final String icon;
-  late final int minWidth;
-  late final int minHeight;
-  late final String tags;
-  late final List<String> compatibleModels;
-  late final String vendor;
-  late final List<IotWidgetElement> elements;
+  final String id;
+  final String title;
+  final String icon;
+  final int minWidth;
+  final int minHeight;
+  final String tags;
+  final List<String> compatibleModels;
+  final String vendor;
+  final List<IotWidgetElement> elements;
 
   IotWidget(
       {required this.id,
-      required this.title,
-      required this.icon,
-      required this.minWidth,
-      required this.minHeight,
-      required this.elements,
-      required this.tags,
-      required this.compatibleModels,
-      required this.vendor});
+      this.title = "",
+      this.icon = "",
+      this.minWidth = 0,
+      this.minHeight = 0,
+      this.elements = const <IotWidgetElement>[],
+      this.tags = "",
+      this.compatibleModels = const <String>[],
+      this.vendor = ""});
 
-  IotWidget.fromJson(Map<String, dynamic> json) {
-    var elements = json['elements'] as List;
+  IotWidget.fromJson(Map<String, dynamic> json)
+      : this.id = json['id'].toString(),
+        this.title = ifNullReturnEmpty(json['title']),
+        this.icon = ifNullReturnEmpty(json['icon']),
+        this.minWidth = json['min_width'],
+        this.minHeight = json['min_height'],
+        this.tags = ifNullReturnEmpty(json['tags']),
+        this.compatibleModels = getCompatibleModels(json),
+        this.vendor = ifNullReturnEmpty(json['vendor']),
+        this.elements = (json['elements'] as List)
+            .map((e) => IotWidgetElement.fromJson(e))
+            .toList();
+
+  static List<String> getCompatibleModels(Map<String, dynamic> json) {
     var compatible = json['compatible_models'] as List;
 
     // convert to regex style
@@ -31,14 +43,6 @@ class IotWidget {
       compat.replaceAll('*', '\w+');
     });
 
-    this.id = json['id'];
-    this.title = json['title'];
-    this.icon = json['icon'];
-    this.minWidth = json['min_width'];
-    this.minHeight = json['min_height'];
-    this.tags = json['tags'];
-    this.compatibleModels = compatible.map((e) => e.toString()).toList();
-    this.vendor = json['vendor'];
-    this.elements = elements.map((e) => IotWidgetElement.fromJson(e)).toList();
+    return compatible.map((e) => e.toString()).toList();
   }
 }

@@ -1,43 +1,33 @@
 part of sam_models_analytics;
 
 class Option {
-  late final List<String> parentIds;
-  late final String id;
-  late final String name;
-  late final ChartEvent event;
-  late final ChartAction action;
+  final List<String> parentIds;
+  final String id;
+  final String name;
+  final ChartEvent event;
+  final ChartAction action;
 
-  Option(
-      {required this.parentIds,
-      required this.id,
-      required this.name,
-      required this.event,
-      required this.action});
+  Option({this.parentIds = const <String>[],
+    required this.id,
+    this.name = "",
+    this.event = const ChartEvent(),
+    this.action = const ChartAction()});
 
-  Option.fromJson(Map<String, dynamic> json, String model) {
-    ChartEvent event = ChartEvent.fromJson(json['event']);
-    ChartAction action = ChartAction.fromJson(json['action']);
+  Option.fromJson(Map<String, dynamic> json, String? model)
+      : this.parentIds = json.containsKey("parent") && json['parent'] != null
+      ? List.from(json["parent"])
+      : model != null ? [model] : [],
+        this.id = json['id'].toString(),
+        this.name = ifNullReturnEmpty(json['name']),
+        this.event = ChartEvent.fromJson(json['event']),
+        this.action = ChartAction.fromJson(json['action']);
 
-    List<String> parents = [model];
-
-    if (json.containsKey("parent")) {
-      parents = List.from(json["parent"]);
-    }
-
-    this.parentIds = parents;
-    this.id = json['id'];
-    this.name = json['name'];
-    this.event = event;
-    this.action = action;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['parent'] = this.parentIds;
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['event'] = this.event.toJson();
-    data['action'] = this.action.toJson();
-    return data;
-  }
+  Map<String, dynamic> toJson() =>
+      {
+        'parent': this.parentIds,
+        'id': this.id,
+        'name': this.name,
+        'event': this.event.toJson(),
+        'action': this.action.toJson()
+      };
 }

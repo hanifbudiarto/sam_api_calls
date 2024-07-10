@@ -1,27 +1,19 @@
 part of sam_models_analytics;
 
 class AnalyticResource {
-  late final String analyticId;
-  late final List<Resource> resources;
+  final String analyticId;
+  final List<Resource> resources;
 
   AnalyticResource({
     required this.analyticId,
-    required this.resources,
+    this.resources = const <Resource>[],
   });
 
-  AnalyticResource.fromJson(Map<String, dynamic> json) {
-    List<Resource> list = [];
-    var res = json['resources'] as List;
-    if (res.length > 0) {
-      list = res.map((c) => Resource.fromJson(c)).toList();
-    }
-    
-    this.analyticId = json['analytic_id'];
-    this.resources = list;
-  }
+  AnalyticResource.fromJson(Map<String, dynamic> json)
+      : this.analyticId = json['analytic_id'].toString(),
+        this.resources = (json['resources'] as List).length > 0
+            ? (json['resources'] as List)
+                .map((c) => Resource.fromJson(c))
+                .toList()
+            : [];
 }
-
-
-
-
-

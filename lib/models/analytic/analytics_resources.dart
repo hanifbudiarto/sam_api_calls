@@ -1,11 +1,14 @@
 part of sam_models_analytics;
 
 class AnalyticsResources {
-  late final List<AnalyticResource> list;
+  final List<AnalyticResource> list;
 
-  AnalyticsResources({required this.list});
+  AnalyticsResources({this.list = const <AnalyticResource> []});
 
-  AnalyticsResources.fromJson(Map<String, dynamic> json) {
+  AnalyticsResources.fromJson(Map<String, dynamic> json)
+      : this.list = getList(json);
+
+  static List<AnalyticResource> getList(Map<String, dynamic> json) {
     List<AnalyticResource> analyticResourceList = [];
 
     if (json.containsKey('body')) {
@@ -14,6 +17,6 @@ class AnalyticsResources {
           bodies.map((c) => AnalyticResource.fromJson(c)).toList();
     }
 
-    this.list = analyticResourceList;
+    return analyticResourceList;
   }
 }

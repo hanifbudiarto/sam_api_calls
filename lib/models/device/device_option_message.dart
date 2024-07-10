@@ -2,61 +2,94 @@ part of sam_models_devices;
 
 class DeviceOptionMessage {
   // rlidsa
-  late String rMessage;
-  late String lMessage;
-  late String iMessage;
-  late String dMessage;
-  late String aMessage;
-  late String sMessage;
+  final String rMessage;
+  final String lMessage;
+  final String iMessage;
+  final String dMessage;
+  final String aMessage;
+  final String sMessage;
 
-  DeviceOptionMessage(
+  const DeviceOptionMessage(
       {this.rMessage = '',
-        this.lMessage =  '',
-        this.iMessage =  '',
-        this.dMessage =  '',
-        this.aMessage = '',
-        this.sMessage =  ''});
+      this.lMessage = '',
+      this.iMessage = '',
+      this.dMessage = '',
+      this.aMessage = '',
+      this.sMessage = ''});
 
-  DeviceOptionMessage.fromJson(Map<String, dynamic> json) {
-    this.rMessage = json['r_msg'];
-    this.lMessage = json['l_msg'];
-    this.iMessage = json['i_msg'];
-    this.dMessage = json['d_msg'];
-    this.aMessage = json['a_msg'];
-    this.sMessage = json.containsKey('s_msg') ? json['s_msg'] : '';
-  }
+  DeviceOptionMessage.fromJson(Map<String, dynamic> json)
+      : this.rMessage = ifNullReturnEmpty(json['r_msg']),
+        this.lMessage = ifNullReturnEmpty(json['l_msg']),
+        this.iMessage = ifNullReturnEmpty(json['i_msg']),
+        this.dMessage = ifNullReturnEmpty(json['d_msg']),
+        this.aMessage = ifNullReturnEmpty(json['a_msg']),
+        this.sMessage =
+            json.containsKey('s_msg') ? ifNullReturnEmpty(json['s_msg']) : '';
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['r_msg'] = this.rMessage;
-    data['l_msg'] = this.lMessage;
-    data['i_msg'] = this.iMessage;
-    data['d_msg'] = this.dMessage;
-    data['a_msg'] = this.aMessage;
-    data['s_msg'] = this.sMessage;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'r_msg': this.rMessage,
+        'l_msg': this.lMessage,
+        'i_msg': this.iMessage,
+        'd_msg': this.dMessage,
+        'a_msg': this.aMessage,
+        's_msg': this.sMessage
+      };
 
-  void addMessage({required String message, required String prefix}) {
+  DeviceOptionMessage replaceMessage(
+      {required DeviceOptionMessage optionMessage,
+      required String message,
+      required String prefix}) {
     switch (prefix) {
       case 'r':
-        rMessage = message;
-        break;
+        return DeviceOptionMessage(
+            rMessage: message,
+            aMessage: optionMessage.aMessage,
+            dMessage: optionMessage.dMessage,
+            iMessage: optionMessage.iMessage,
+            lMessage: optionMessage.lMessage,
+            sMessage: optionMessage.sMessage);
       case 'l':
-        lMessage = message;
-        break;
+        return DeviceOptionMessage(
+            rMessage: optionMessage.rMessage,
+            aMessage: optionMessage.aMessage,
+            dMessage: optionMessage.dMessage,
+            iMessage: optionMessage.iMessage,
+            lMessage: message,
+            sMessage: optionMessage.sMessage);
       case 'i':
-        iMessage = message;
-        break;
+        return DeviceOptionMessage(
+            rMessage: optionMessage.rMessage,
+            aMessage: optionMessage.aMessage,
+            dMessage: optionMessage.dMessage,
+            iMessage: message,
+            lMessage: optionMessage.lMessage,
+            sMessage: optionMessage.sMessage);
       case 'd':
-        dMessage = message;
-        break;
+        return DeviceOptionMessage(
+            rMessage: optionMessage.rMessage,
+            aMessage: optionMessage.aMessage,
+            dMessage: message,
+            iMessage: optionMessage.iMessage,
+            lMessage: optionMessage.lMessage,
+            sMessage: optionMessage.sMessage);
       case 'a':
-        aMessage = message;
-        break;
+        return DeviceOptionMessage(
+            rMessage: optionMessage.rMessage,
+            aMessage: message,
+            dMessage: optionMessage.dMessage,
+            iMessage: optionMessage.iMessage,
+            lMessage: optionMessage.lMessage,
+            sMessage: optionMessage.sMessage);
       case 's':
-        sMessage = message;
-        break;
+        return DeviceOptionMessage(
+            rMessage: optionMessage.rMessage,
+            aMessage: optionMessage.aMessage,
+            dMessage: optionMessage.dMessage,
+            iMessage: optionMessage.iMessage,
+            lMessage: optionMessage.lMessage,
+            sMessage: message);
     }
+
+    return optionMessage;
   }
 }

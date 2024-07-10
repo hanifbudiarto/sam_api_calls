@@ -1,11 +1,11 @@
 part of sam_models_users;
 
 class Countries {
-  late final List<Country> list;
+  final List<Country> list;
 
-  Countries({required this.list});
+  Countries({this.list = const <Country>[]});
 
-  Countries.fromJson(Map<String, dynamic> json) {
+  static List<Country> getList(Map<String, dynamic> json) {
     List<Country> countries = [];
 
     if (json.containsKey('body')) {
@@ -13,6 +13,8 @@ class Countries {
       countries = list.map((item) => Country.fromJson(item)).toList();
     }
 
-    this.list = countries;
+    return countries;
   }
+
+  Countries.fromJson(Map<String, dynamic> json) : this.list = getList(json);
 }

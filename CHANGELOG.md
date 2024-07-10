@@ -1,3 +1,79 @@
+## [0.1.89] - fix device toJson
+
+## [0.1.88] - add datatype to sam iot widgets accepted parameters
+
+## [0.1.87] - fix analytics options parsing 
+
+## [0.1.86] - fix user profile parsing
+
+## [0.1.85] - threshold default to -99999 with string comparison ==
+
+## [0.1.84] - add debug on unknown dio error
+
+## [0.1.83] - threshold from json, convert to string
+
+## [0.1.82] - Set threshold as string
+
+## [0.1.81] - Upgrade intl to 0.18.0
+
+## [0.1.80] - Get deviceslogs, allow null timestart, follow server configuration
+
+## [0.1.79] - Get deviceslogs timestart convert to toIso8601String
+
+## [0.1.78] - Add rounding options 
+
+## [0.1.77] - Check null on parse dashboards
+
+## [0.1.76] - detail method on error log
+
+## [0.1.75] - add error on bad response
+
+## [0.1.74] - fix decode error response, default message included
+
+## [0.1.73] - remove unused RegExp on device_properties_helper
+
+## [0.1.72] - Fix catchError, better error message on timeout and socketException
+
+## [0.1.71] - Nullable saveTokens
+
+## [0.1.70] - Add white label endpoint
+
+## [0.1.69] - When refresh token failed, return handler.error
+
+## [0.1.68] - Fix chartOptions model can be null
+
+## [0.1.67] - Fix SamIotWidget instance collection
+
+## [0.1.66] - Fix parse JSON devices, check nullable on Wgt and DeviceOption
+
+## [0.1.65] - Fix organization
+
+## [0.1.64] - Fix default values, remove unused late, refactor all
+
+## [0.1.63] - Fix interceptor
+
+## [0.1.62] - Change fromJson and toJson format
+
+## [0.1.61] - Add catchError to service implementation and add toString() to json properties
+
+## [0.1.60] - Remove hardcoded baseUrl and brokerAddress
+
+## [0.1.59] - change epoch loki as String
+
+## [0.1.58] - Add debug to loki logger
+
+## [0.1.57] - Check nullable DeviceOption.DeviceBleConfig
+
+## [0.1.56] - Add to DeviceIot: fw_update_mode, fw_size, fw_version_code
+
+## [0.1.55] - Catch error when send log to Loki raised an error
+
+## [0.1.54] - Send log to Centralized Log Loki or console + minor change
+
+## [0.1.53] - Send log to Centralized Log Loki or console
+
+## [0.1.52] - Check error failed get all analytics
+
 ## [0.1.51] - error.response?.statusCode null check
 
 ## [0.1.50] - range [0, 19] with seconds

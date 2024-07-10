@@ -14,9 +14,10 @@ class DevicePropertiesHelper {
   static bool isDatatypeAcceptable(
       IotWidgetElement selectedIotWidgetElement, Property property) {
     // cek apakah di selectedIotWidgetsElement, accepted datatype nya sesuai dengan datatype property device
-    return selectedIotWidgetElement.acceptedParameters.any((datatype) =>
-        property.datatype != null &&
-        datatype.toLowerCase() == property.datatype!.toLowerCase());
+    return selectedIotWidgetElement.acceptedParameters.any(
+        (acceptedParameter) =>
+            acceptedParameter.dataType.toLowerCase() ==
+            property.datatype.toLowerCase());
   }
 
   static bool isSettableSuitable(
@@ -60,8 +61,8 @@ class DevicePropertiesHelper {
 
   static bool isDatatypeSettableRetainedSuitable(
       IotWidgetElement element, Property prop) {
-    if (element.acceptedParameters.any((element) => element.contains("/")))
-      return true;
+    if (element.acceptedParameters
+        .any((acceptedParameter) => acceptedParameter.parameter.contains("/"))) return true;
 
     return isDatatypeAcceptable(element, prop) &&
         isSettableSuitable(element, prop) &&
@@ -77,9 +78,9 @@ class DevicePropertiesHelper {
         if (node.isConfig == true) return;
 
         int nodeCount = 1;
-        if (node.array != null) {
+        if (node.array.length > 0) {
           // multiple nodes
-          List<String> splittedArr = node.array!.split("-");
+          List<String> splittedArr = node.array.split("-");
           int maxIndex = int.parse(splittedArr[1]);
           int minIndex = int.parse(splittedArr[0]);
 
@@ -101,10 +102,9 @@ class DevicePropertiesHelper {
     return valid;
   }
 
-  static bool isVendorSuitable(IotWidget parent, String? model) {
+  static bool isVendorSuitable(IotWidget parent, String model) {
     return parent.compatibleModels.any((compatibleModel) {
-      RegExp regex = RegExp(compatibleModel);
-      return regex.hasMatch(model!);
+      return model == compatibleModel;
     });
   }
 
@@ -115,17 +115,17 @@ class DevicePropertiesHelper {
         if (node.isConfig == true) return;
 
         int nodeCount = 1;
-		int minIndex = 0;
-		int maxIndex = 0;
-		
-        if (node.array != null) {
+        int minIndex = 0;
+        int maxIndex = 0;
+
+        if (node.array.length > 0) {
           // multiple nodes
-          List<String> splitArr = node.array!.split("-");
+          List<String> splitArr = node.array.split("-");
           maxIndex = int.parse(splitArr[1]);
           minIndex = int.parse(splitArr[0]);
 
           nodeCount = maxIndex - minIndex + 1;
-        }		
+        }
 
         for (int i = minIndex; i < maxIndex + 1; i++) {
           node.properties.forEach((prop) {
@@ -150,12 +150,12 @@ class DevicePropertiesHelper {
         if (node.isConfig == true) return;
 
         int nodeCount = 1;
-		int minIndex = 0;
-		int maxIndex = 0;
-		
-        if (node.array != null) {
+        int minIndex = 0;
+        int maxIndex = 0;
+
+        if (node.array.length > 0) {
           // multiple nodes
-          List<String> splittedArr = node.array!.split("-");
+          List<String> splittedArr = node.array.split("-");
           int maxIndex = int.parse(splittedArr[1]);
           int minIndex = int.parse(splittedArr[0]);
 
@@ -185,9 +185,9 @@ class DevicePropertiesHelper {
   }
 
   // weird naming because of the API
-  static String? getPropertyNameWithIndex(Property prop) {
-    if (prop.parentId != null && prop.parentId!.contains("_")) {
-      List<String> splitParentId = prop.parentId!.split("_");
+  static String getPropertyNameWithIndex(Property prop) {
+    if (prop.parentId.contains("_")) {
+      List<String> splitParentId = prop.parentId.split("_");
       return "${prop.name} (${splitParentId[1]})";
     }
 

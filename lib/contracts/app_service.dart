@@ -18,6 +18,5 @@ abstract class AppService {
 
   Future<UserAccount> getUserAccountByEmail(String email);
 
-  String getThrowsMessage(
-      String defaultError, Map<String, dynamic>? responseData);
+  Future<WhiteLabel> getWhiteLabel();
 }

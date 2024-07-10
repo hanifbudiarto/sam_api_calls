@@ -1,57 +1,59 @@
 part of sam_models_devices;
 
 class DeviceOption {
-  late bool notify;
-  late String notifyChecked;
-  late DeviceOptionMessage notifyMessage;
+  final bool notify;
+  final String notifyChecked;
+  final DeviceOptionMessage notifyMessage;
 
-  late bool alarm;
-  late String alarmChecked;
-  late DeviceOptionMessage alarmMessage;
-  DeviceBleConfig? deviceBleConfig;
+  final bool alarm;
+  final String alarmChecked;
+  final DeviceOptionMessage alarmMessage;
+  final DeviceBleConfig deviceBleConfig;
 
-  DeviceOption(
+  const DeviceOption(
       {this.notify = false,
       this.alarm = false,
       this.notifyChecked = '',
       this.alarmChecked = '',
-      this.deviceBleConfig,
-      DeviceOptionMessage? notifyMessage,
-      DeviceOptionMessage? alarmMessage})
-      : this.notifyMessage =
-            notifyMessage == null ? DeviceOptionMessage() : notifyMessage,
-        this.alarmMessage =
-            alarmMessage == null ? DeviceOptionMessage() : alarmMessage;
+      this.deviceBleConfig = const DeviceBleConfig(),
+      this.notifyMessage = const DeviceOptionMessage(),
+      this.alarmMessage = const DeviceOptionMessage()});
 
-  DeviceOption.fromJson(Map<String, dynamic> json) {
-    notify = json['notify'];
-    alarm = json['alert'];
-    notifyChecked =
-        json.containsKey('notify_checked') ? json['notify_checked'] : '';
-    alarmChecked =
-        json.containsKey('alert_checked') ? json['alert_checked'] : '';
+  DeviceOption.fromJson(Map<String, dynamic> json)
+      : notify = json['notify'] == true,
+        alarm = json['alert'] == true,
+        notifyChecked = json.containsKey('notify_checked')
+            ? ifNullReturnEmpty(json['notify_checked'])
+            : '',
+        alarmChecked = json.containsKey('alert_checked')
+            ? ifNullReturnEmpty(json['alert_checked'])
+            : '',
+        notifyMessage = json.containsKey('notifymsg') && json['notifymsg'] != null
+            ? DeviceOptionMessage.fromJson(json['notifymsg'])
+            : DeviceOptionMessage(),
+        alarmMessage = json.containsKey('alarmmsg') && json['alarmmsg'] != null
+            ? DeviceOptionMessage.fromJson(json['alarmmsg'])
+            : DeviceOptionMessage(),
+        deviceBleConfig = getBleConfig(json);
 
-    notifyMessage = json.containsKey('notifymsg')
-        ? DeviceOptionMessage.fromJson(json['notifymsg'])
-        : DeviceOptionMessage();
-    alarmMessage = json.containsKey('alarmmsg')
-        ? DeviceOptionMessage.fromJson(json['alarmmsg'])
-        : DeviceOptionMessage();
-
-    if (json.containsKey("ble")) {
-      deviceBleConfig = DeviceBleConfig.fromJson(json["ble"]);
+  static DeviceBleConfig getBleConfig(Map<String, dynamic> json) {
+    if (json.containsKey("ble") &&
+        json['ble'].runtimeType != Null &&
+        json['ble'] != null &&
+        json['ble'].toString() != 'null') {
+      return DeviceBleConfig.fromJson(json["ble"]);
     }
+
+    return DeviceBleConfig();
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['notify'] = this.notify;
-    data['notify_checked'] = this.notifyChecked;
-    data['alert'] = this.alarm;
-    data['alert_checked'] = this.alarmChecked;
-    data['notifymsg'] = this.notifyMessage;
-    data['alarmmsg'] = this.alarmMessage;
-    data['ble'] = this.deviceBleConfig;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'notify': this.notify,
+        'notify_checked': this.notifyChecked,
+        'alert': this.alarm,
+        'alert_checked': this.alarmChecked,
+        'notifymsg': this.notifyMessage.toJson(),
+        'alarmmsg': this.alarmMessage.toJson(),
+        'ble': this.deviceBleConfig.toJson()
+      };
 }

@@ -1,12 +1,14 @@
 part of sam_models;
 
 class SamIotWidgets {
-  late final List<IotWidget> collection;
+  final List<IotWidget> collection = [];
 
-  static late final SamIotWidgets instance = SamIotWidgets._internal();
+  static final SamIotWidgets instance = SamIotWidgets._internal();
 
-  factory SamIotWidgets({List<IotWidget> collection = const <IotWidget>[]}) {
-    instance.collection = collection;
+  factory SamIotWidgets({List<IotWidget> widgets = const <IotWidget>[]}) {
+    if (instance.collection.length == 0) {
+      instance.collection.addAll(widgets);
+    }
     return instance;
   }
 

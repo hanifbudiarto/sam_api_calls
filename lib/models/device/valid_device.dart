@@ -5,7 +5,7 @@ class ValidDevice {
   final DeviceIot device;
   final bool valid;
 
-  ValidDevice({required this.id, required this.device, required this.valid});
+  ValidDevice({required this.id, required this.device, this.valid = false});
 
   @override
   bool operator ==(other) {

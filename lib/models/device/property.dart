@@ -1,59 +1,56 @@
 part of sam_models_devices;
 
 class Property {
-  String? parentId;
-  late final String id;
-  String? name;
-  bool? settable;
-  bool? retained;
-  String? unit;
-  String? datatype;
-  String? format;
+  String parentId;
+  final String id;
+  String name;
+  bool settable;
+  bool retained;
+  String unit;
+  String datatype;
+  String format;
 
   Property(
-      {this.parentId,
+      {required this.parentId,
       required this.id,
-      this.name,
-      this.settable,
-      this.retained,
-      this.unit,
-      this.datatype,
-      this.format});
+      this.name = "",
+      this.settable = false,
+      this.retained = false,
+      this.unit = "",
+      this.datatype = "string",
+      this.format = ""});
 
-  Property.copyFrom(Property prop) {
-    this.parentId = prop.parentId;
-    this.id = prop.id;
-    this.name = prop.name;
-    this.settable = prop.settable;
-    this.retained = prop.retained;
-    this.unit = prop.unit;
-    this.datatype = prop.datatype;
-    this.format = prop.format;
+  static Property copyFrom(Property prop) {
+    return Property(
+        id: prop.id,
+        parentId: prop.parentId,
+        name: prop.name,
+        settable: prop.settable,
+        retained: prop.retained,
+        unit: prop.unit,
+        datatype: prop.datatype,
+        format: prop.format);
   }
 
-  Property.fromJson(String parentId, Map<String, dynamic> json) {
-    this.parentId = parentId;
+  Property.fromJson(String parentId, Map<String, dynamic> json)
+      : this.parentId = parentId,
+        id = json['id'].toString(),
+        name = ifNullReturnEmpty(json['name']),
+        settable = json['settable'] == true,
+        retained = json['retained'] == true,
+        unit = ifNullReturnEmpty(json['unit']),
+        datatype = ifNullReturnEmpty(json['datatype']),
+        format = ifNullReturnEmpty(json['format']);
 
-    id = json['id'];
-    name = json['name'];
-    settable = json['settable'];
-    retained = json['retained'];
-    unit = json['unit'];
-    datatype = json['datatype'];
-    format = json['format'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['settable'] = this.settable;
-    data['retained'] = this.retained;
-    data['unit'] = this.unit;
-    data['datatype'] = this.datatype;
-    data['format'] = this.format;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'id': this.id,
+        'name': this.name,
+        'settable': this.settable,
+        'retained': this.retained,
+        'unit': this.unit,
+        'datatype': this.datatype,
+        'format': this.format
+      };
 
   @override
   bool operator ==(other) {

@@ -1,11 +1,13 @@
 part of sam_models_analytics;
 
 class Analytics {
-  late final List<AnalyticWidget> list;
+  final List<AnalyticWidget> list;
 
-  Analytics({required this.list});
+  Analytics({this.list = const <AnalyticWidget> []});
 
-  Analytics.fromJson(Map<String, dynamic> json) {
+  Analytics.fromJson(Map<String, dynamic> json) : this.list = getList(json);
+
+  static List<AnalyticWidget> getList(Map<String, dynamic> json) {
     List<AnalyticWidget> analytics = [];
 
     List? results = json['body'] as List?;
@@ -14,6 +16,6 @@ class Analytics {
       analytics = results.map((a) => AnalyticWidget.fromJson(a)).toList();
     }
 
-    this.list = analytics;
+    return analytics;
   }
 }

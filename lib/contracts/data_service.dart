@@ -108,7 +108,4 @@ abstract class DataService {
   Future<Analytics> getAnalyticById(String id);
 
   Future<Analytics> getAnalyticByVcodeId(String vcode, String id);
-
-  String getThrowsMessage(
-      String defaultError, Map<String, dynamic> responseData);
 }

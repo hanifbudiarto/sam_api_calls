@@ -9,6 +9,7 @@ import 'package:path/path.dart';
 import 'package:sam_api_calls/contracts/contracts.dart';
 import 'package:sam_api_calls/models/models.dart';
 import 'package:sam_api_calls/util/util.dart';
+import 'package:sam_api_calls/logger/logger.dart';
 
 part 'api_endpoints.dart';
 part 'app_interceptor.dart';

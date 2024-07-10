@@ -16,13 +16,13 @@ abstract class AuthService {
   Future<AuthToken> refreshDeviceToken(String deviceRefreshToken);
 
   Future<bool> saveTokens(
-      {AuthToken appToken, AuthToken userToken, AuthToken deviceToken});
+      {AuthToken? appToken, AuthToken? userToken, AuthToken? deviceToken});
 
-  Future<String?> getCurrentUserAccessToken();
+  Future<String> getCurrentUserAccessToken();
 
-  Future<String?> getCurrentAppAccessToken();
+  Future<String> getCurrentAppAccessToken();
 
-  Future<String?> getCurrentDeviceAccessToken();
+  Future<String> getCurrentDeviceAccessToken();
 
   Future<String> getSavedUserRefreshToken();
 

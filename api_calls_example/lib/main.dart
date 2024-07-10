@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
+import 'package:sam_api_calls/contracts/contracts.dart';
 import 'package:sam_api_calls/impl/impl.dart';
+import 'package:sam_api_calls/logger/logger.dart';
 import 'package:sam_api_calls/models/models.dart';
-import 'local_service_impl.dart';
 
 void main() {
   runApp(MyApp());
@@ -60,71 +61,115 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() async {
-    final Dio userDio = Dio(BaseOptions(baseUrl: ApiEndpoints.BASE_URL));
-    (userDio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
-      };
+    setState(() {
+      _counter++;
+    });
 
+    final String rootCA = '''''';
+
+    final Dio userDio =
+        Dio(BaseOptions(baseUrl: "https://staging.iot.samelement.com/sapipublic"));
+    userDio.httpClientAdapter =
+        IOHttpClientAdapter(onHttpClientCreate: (client) {
+      // Don't trust any certificate just because their root cert is trusted.
+      final HttpClient client =
+          HttpClient(context: SecurityContext(withTrustedRoots: false));
+      // You can test the intermediate / root cert here. We just ignore it.
+      client.badCertificateCallback = (cert, host, port) => true;
       return client;
-    };
+    });
 
-    final dataService = DataServiceImpl(dio: userDio);
+    final logger = ConsoleLogger(logLevel: 'debug');
+
+    final dataService = DataServiceImpl(
+        dio: userDio,
+        logger: logger,
+        broker: BrokerProperties(
+            protocol: "ssl", port: 8883, address: "mqtt.iot.samelement.com"));
 
     final localService = LocalServiceImpl();
 
-    final Dio authDio = Dio(BaseOptions(baseUrl: ApiEndpoints.HOST));
-    final authService =
-        AuthServiceImpl(storage: localService, interceptors: [], dio: authDio);
+    final Dio authDio = Dio(BaseOptions(baseUrl: "https://staging.iot.samelement.com/sauth"));
+    authDio.httpClientAdapter =
+        IOHttpClientAdapter(onHttpClientCreate: (client) {
+      // Don't trust any certificate just because their root cert is trusted.
+      final HttpClient client =
+          HttpClient(context: SecurityContext(withTrustedRoots: false));
+      // You can test the intermediate / root cert here. We just ignore it.
+      client.badCertificateCallback = (cert, host, port) => true;
+      return client;
+    });
+    final authService = AuthServiceImpl(
+        storage: localService, interceptors: [], dio: authDio, logger: logger);
+
     final authInterceptor = AuthInterceptor(
-        dio: userDio, authService: authService, onRefreshedToken: () async {});
+        logger: logger,
+        authService: authService,
+        onRefreshedToken: () async {});
     userDio.interceptors.addAll([authInterceptor]);
 
-    final Dio appDio = Dio(BaseOptions(baseUrl: ApiEndpoints.BASE_URL));
-    (appDio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
-      };
-
+    final Dio appDio = Dio(BaseOptions(
+        baseUrl: "https://staging.iot.samelement.com/sapipublic"));
+    appDio.httpClientAdapter =
+        IOHttpClientAdapter(onHttpClientCreate: (client) {
+      // Don't trust any certificate just because their root cert is trusted.
+      final HttpClient client =
+          HttpClient(context: SecurityContext(withTrustedRoots: false));
+      // You can test the intermediate / root cert here. We just ignore it.
+      client.badCertificateCallback = (cert, host, port) => true;
       return client;
-    };
+    });
     final appInterceptor =
-        AppInterceptor(dio: appDio, authService: authService);
+        AppInterceptor(authService: authService, logger: logger);
     appDio.interceptors.addAll([appInterceptor]);
 
-    // final appService = AppServiceImpl(dio: appDio);
-    // final publicService = PublicServiceImpl();
+    final appService = AppServiceImpl(dio: appDio, logger: logger);
+    final publicService = PublicServiceImpl();
 
-    final BasicAuth appAuth = BasicAuth(username: "", password: "");
+    final BasicAuth appAuth = BasicAuth(username: "BfB0EdwbWGJxhPEDW6FmvcahSWOb1qLK", password: "PTnklLP94Kxm7JscdpvXNKoTL9sXA397CFNzcXIgbvsSSWGgZcKtgzwHBp49Yj7CtsQKdCTgJgWvEGNvndljBC7b7wWobsjkPgqSBn3g5o2VmhpOtsGKU7gsAfZ2JdaQ");
     final appToken =
         await authService.generateAppToken(appAuth.username, appAuth.password);
-    print(appToken.accessToken);
 
-    final deviceToken = await authService.generateDeviceToken("", "");
-    print(deviceToken.accessToken);
+    final deviceToken = await authService.generateDeviceToken("9W6VRx0ZCDdx8FylmqxobOSg1PbDxhSN", "uVopAVYjQyFYKN3ZjuKUxITUaAR7XKj3jbGv1HbnwqHYZp5XZTRmuF3CzmZCtKvlK3g3PFj4JmXYzgucCiXm1XKOyIvSLJl00oUZdWJz6kmvgA5ZS7O1cMgixDCPk79m");
 
-    final userToken =
-        await authService.generateUserToken("", "", appToken.accessToken);
-    print(userToken.accessToken);
+    // final userToken =
+    //     await authService.generateUserToken("hanif@samelement.com", "ABCD1234efgh", appToken.accessToken);
 
     await authService
         .saveTokens(
-            appToken: appToken, userToken: userToken, deviceToken: deviceToken)
+            appToken: appToken,
+            deviceToken: deviceToken)
         .catchError((e) {
       print(e.toString());
     });
 
-    UserAccount userAccount = await dataService.getUserAccount().then((value) {
-      return value;
-    }).catchError((e) {
-      print(e.toString());
+    await appService.getWhiteLabel().then((whitelabel) {
+      print(whitelabel.enable);
     });
 
-    print(userAccount != null);
+    await appService.getUserAccountByEmail("hanif@samelemento.com").then((userAccount) {
+      print("user account ${userAccount.userFname}");
+    });
+
+    await appService.postNewUser(
+        UserProfile(
+            userId: "",
+            userEmail: "hanif@samelement.com",
+            userFname: "Hanif",
+            userLname: "Budi"),
+        "ABCD1234efgh");
+
+
+
+    // await dataService.getUserAccount().then((userAccount) {
+    //   print(userAccount.userFname);
+    // }).catchError((e) {
+    //   print(e.toString());
+    // });
+    //
+    // await dataService.getDevices(limit: 300).then((devices) {
+    //   print(devices.list.length);
+    // });
   }
 
   @override
@@ -177,5 +222,49 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class LocalServiceImpl implements LocalService {
+  @override
+  Future<bool> clear({required String key}) {
+    // TODO: implement clear
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> clearAll() {
+    // TODO: implement clearAll
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<LocalStorage> getStorage({String? path}) {
+    // TODO: implement getStorage
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> isContainsKey({required String key}) {
+    // TODO: implement isContainsKey
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> isStorageInitialized() {
+    // TODO: implement isStorageInitialized
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> read({required String key}) {
+    // TODO: implement read
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> write({required String key, required String value}) {
+    // TODO: implement write
+    throw UnimplementedError();
   }
 }

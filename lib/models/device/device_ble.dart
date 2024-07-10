@@ -1,19 +1,14 @@
+import 'package:sam_api_calls/util/util.dart';
+
 class DeviceBle {
-  late final String id, name, address;
+  final String id, name, address;
 
-  DeviceBle({required this.id, required this.name, required this.address});
+  DeviceBle({required this.id, this.name = "", this.address = ""});
 
-  DeviceBle.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    address = json['address'];
-  }
+  DeviceBle.fromJson(Map<String, dynamic> json)
+      : id = json['id'].toString(),
+        name = ifNullReturnEmpty(json['name']),
+        address = ifNullReturnEmpty(json['address']);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['address'] = address;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'address': address};
 }
